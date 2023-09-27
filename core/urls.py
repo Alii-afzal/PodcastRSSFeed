@@ -1,5 +1,5 @@
 from django.urls import path
-from rssfeedparser.views import ExtractXML
+from core.views import ExtractXML
  
  
 urlpatterns = [
