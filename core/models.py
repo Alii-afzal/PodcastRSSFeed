@@ -1,5 +1,14 @@
 from django.db import models
 
+class Type(models.Model):
+    pass
+
+class Category(models.Model):
+    pass
+
+class XmlLink(models.Model):
+    xml_link = models.URLField(unique=True)
+    rss_type = models.ForeignKey(Type, on_delete=models.PROTECT)
 
 class Channel(models.Model):
     title = models.CharField(max_length=30)
