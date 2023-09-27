@@ -1,9 +1,9 @@
 from django.shortcuts import render
 # from RSSfeed.parsers import PodcastParser, Parser, xml_data
 from rest_framework.views import APIView
-from rssfeedparser.serializers import ChannelSerializer, EpisodeSerializer
+from core.serializers import ChannelSerializer, EpisodeSerializer
 from rest_framework.response import Response
-from rssfeedparser.models import Episode, Channel
+from core.models import Episode, Channel
 from .parser import channel_parser, item_parser
 class ExtractXML(APIView):
     def get(self, request):
