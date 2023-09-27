@@ -1,6 +1,16 @@
 from django.db import models
 
 
+class Type(models.Model):
+    pass
+class Category(models.Model):
+    title = models.CharField(max_length=50)
+    def __str__(self):
+        return self.title
+class XmlLink(models.Model):
+    xml_link = models.URLField(unique=True)
+    rss_type = models.ForeignKey(Type, on_delete=models.PROTECT)
+
 class Channel(models.Model):
     title = models.CharField(max_length=30)
     description = models.TextField(blank=True, null=True)
@@ -8,7 +18,7 @@ class Channel(models.Model):
     language = models.CharField(max_length=30, blank=True, null=True)
     pubDate = models.DateTimeField(blank=True, null=True)
     duration = models.CharField(max_length=50 , blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     image = models.URLField(blank=True, null=True)
     owner = models.BooleanField(null=True)
     author = models.TextField()
