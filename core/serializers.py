@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rssfeedparser.models import Channel, Episode, News,  XmlLink
+from .models import Channel, Episode, News,  XmlLink
 
 class ChannelSerializer(serializers.ModelSerializer):
     class Meta:
