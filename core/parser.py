@@ -1,11 +1,12 @@
 from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
-from .models import Channel, Episode
+from .models import Channel, Episode, Category
 
 def convert_text_to_datefield(date_str):
+    custom_format='%a, %d %b %Y %H:%M:%S %z'
     if date_str:
-        datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %z')
+        return datetime.strptime(date_str, custom_format).strftime(custom_format)
     else:
         return None
 
@@ -34,19 +35,19 @@ def channel_parser():
             title = elm.find('.//title').text
         else:
             title = None
-        print(title)
+        # print(title)
         if elm.findall('.//subtitle'):
             subtitle = elm.find('.//subtitle').text
         else:
             subtitle = None
-        print(subtitle)
+        # print(subtitle)
         if elm.findall('.//description'):
             description = elm.find('.//description').text
         else:
             description = None
-        print(description)
+        # print(description)
         if elm.findall('.//pubDate'):
-            pubDate = elm.find('.//pubDate').text
+            pubDate = convert_text_to_datefield(elm.find('.//pubDate').text)
         else:
             pubDate = None
         print(pubDate)
@@ -54,30 +55,40 @@ def channel_parser():
             image = elm.find('.//itunes:image', itunes_namespace).attrib
         else:
             image = None
-        print(image)
+        # print(image)
         if elm.findall('.//itunes:author', itunes_namespace):
             author = elm.find('.//itunes:author', itunes_namespace).text
         else:
             author = None
-        print(author)
+        # print(author)
+        if elm.findall('.//itunes:category', itunes_namespace):
+            category = elm.find('.//itunes:category', itunes_namespace).get('text')
+        else:
+            category = None
+        # print(category)
         if elm.findall('.//link'):
             source = elm.find('.//link').text
         else:
             source = None
-        print(source)
+        # print(source)
         if elm.findall('.//language'):
             language = elm.find('.//language').text
         else: 
             language = None
-        print(language)
+        # print(language)
         if elm.findall('.//itunes:owner/itunes:name', itunes_namespace):
             owner = elm.find('.//itunes:owner/itunes:name', itunes_namespace).text
         else:
             owner = None
-        print(owner)
+        # print(convert_text_to_boolianfield(owner))
+        # print(owner)
+    
+    category = Category(
+        title=category
+    )
+    category.save()
     
     channel = Channel(
-        
             title = title,
             subtitle = subtitle,
             description = description,
@@ -85,8 +96,9 @@ def channel_parser():
             image = image,
             language = language,
             author = author,
+            category=category,
             source = source,
-            owner = convert_text_to_boolianfield(owner),   
+            owner = owner,   
     ) 
 
     channel.save()
@@ -141,47 +153,47 @@ def item_parser():
             title = elm.find('.//title').text
         else:
             title = None
-        print(title)
+        # print(title)
         if elm.findall('.//subtitle'):
             subtitle = elm.findall('.//subtitle').text
         else:
             subtitle = None
-        print(subtitle)
+        # print(subtitle)
         if elm.findall('.//description'):
             description = elm.find('.//description').text
         else:
             description = None
-        print(description)
+        # print(description)
         if elm.findall('.//pubDate'):
-            pubDate = elm.find('.//pubDate').text
+            pubDate = convert_text_to_datefield(elm.find('.//pubDate').text)
         else:
             pubDate = None
-        print(pubDate)
+        # print(pubDate)
         if elm.findall('.//itunes:image', itunes_namespace):
             image = elm.find('.//itunes:image', itunes_namespace).attrib.get('href')
         else:
             image = None
-        print(image)
+        # print(image)
         if elm.findall('.//itunes:duration', itunes_namespace):
             duration = elm.find('.//itunes:duration', itunes_namespace).text
         else:
             duration = None
-        print(duration)
+        # print(duration)
         if elm.findall('.//enclosure'):
             audio_file = elm.find('.//enclosure').attrib.get('url')
         else:
             audio_file = None
-        print(audio_file)
+        # print(audio_file)
         if elm.findall('.//guid'):
             guid = elm.find('.//guid').text
         else:
             guid = None 
-        print(guid)
+        # print(guid)
         if elm.findall('.//itunes:explicit', itunes_namespace):
-            explicit = elm.find('.//itunes:explicit', itunes_namespace).text
+            explicit = convert_text_to_boolianfield(elm.find('.//itunes:explicit', itunes_namespace).text)
         else:
             explicit = None
-        print(explicit)
+        # print(explicit)
         
     item = Episode.objects.create(
         **{
@@ -241,5 +253,5 @@ def item_parser():
 # print(channel_parser())
 # print(item_parser())
 
-channel_parser()
-item_parser()
+# channel_parser()
+# item_parser()
