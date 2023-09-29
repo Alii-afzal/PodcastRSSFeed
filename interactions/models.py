@@ -7,3 +7,7 @@ class Subscribe(models.Model):
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     user =  models.ForeignKey(User, on_delete=models.CASCADE)
     
+class Like(models.Model):
+    episode = models.ForeignKey(Episode, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
