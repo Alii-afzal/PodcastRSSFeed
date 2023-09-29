@@ -3,10 +3,11 @@ import requests
 import xml.etree.ElementTree as ET
 from .models import Channel, Episode, Category
 
+
 def convert_text_to_datefield(date_str):
     custom_format='%a, %d %b %Y %H:%M:%S %z'
     if date_str:
-        return datetime.strptime(date_str, custom_format).strftime(custom_format)
+        return datetime.strptime(date_str, custom_format)
     else:
         return None
 
@@ -80,8 +81,8 @@ def channel_parser():
             owner = elm.find('.//itunes:owner/itunes:name', itunes_namespace).text
         else:
             owner = None
-        # print(convert_text_to_boolianfield(owner))
-        # print(owner)
+
+        print(owner)
     
     category = Category(
         title=category
@@ -92,7 +93,7 @@ def channel_parser():
             title = title,
             subtitle = subtitle,
             description = description,
-            pubDate = convert_text_to_datefield(pubDate),
+            pubDate = pubDate,
             image = image,
             language = language,
             author = author,
@@ -103,42 +104,6 @@ def channel_parser():
 
     channel.save()
     
-    # channel = Channel(
-    #     title = [elm.text for elm in root.findall(".//channel/title", itunes_namespace)],
-    #     # print(title),
-    #     subtitle = [elm.text for elm in root.findall(".//channel/subtitle", itunes_namespace)],
-    #     # print(subtitle)
-    #     description = [elm.text for elm in root.findall(".//channel/description", itunes_namespace)],
-    #     # print(description)
-    #     pubDate = [elm.text for elm in root.findall(".//channel/pubDate", itunes_namespace)],
-    #     # print(pubDate)
-    #     image = [elm.attrib for elm in root.findall(".//channel/itunes:image", itunes_namespace)],
-    #     # print(image)
-    #     author = [elm.text for elm in root.findall(".//channel/itunes:author", itunes_namespace)],
-    #     # print(author)
-    #     source = [elm.text for elm in root.findall(".//channel/link", itunes_namespace)],
-    #     # print(source)
-    #     language = [elm.text for elm in root.findall(".//channel/language", itunes_namespace)],
-    #     # print(language)
-    #     owner = [elm.text for elm in root.findall(".//channel/itunes:owner/itunes:name", itunes_namespace)],
-    # # print(owner)
-    # )
-    # channel.save()
-    # return {
-    #         'title': title,
-    #         'subtitle': subtitle,
-    #         'description' : description,
-    #         'puDate' : pubDate,
-    #         'image' : image,
-    #         'language' : language,
-    #         'author' : author,
-    #         'source' : source,
-    #         'owner' : owner,
-    #     }
-    
-    
-
-
 def item_parser():
     response = requests.get('https://rss.art19.com/apology-line')
     xml_data = response.text
@@ -201,57 +166,13 @@ def item_parser():
             'subtitle': subtitle,
             'description' : description,
             'guid' : guid,
-            'pubDate' : convert_text_to_datefield(pubDate),
+            'pubDate' : pubDate,
             'duration' : duration,
             'audio_file' : audio_file,
             'image' : image,
-            'explicit' : convert_text_to_boolianfield(explicit),
+            'explicit' : explicit,
         }
     ) 
-        
     
-    # item = Episode.objects.create(
-        
-    #     title = [elm.text for elm in root.findall(".//item/title", itunes_namespace)],
-    #     # print(title)
-    #     subtitle = [elm.text for elm in root.findall(".//item/itunes:subtitle", itunes_namespace)],
-    #     # print(subtitle)
-    #     description = [elm.text for elm in root.findall(".//item/description", itunes_namespace)],
-    #     # print(description)
-        
-    #     pubDate = [elm.text for elm in root.findall(".//item/pubDate", itunes_namespace)],
-    #     # print(pubDate)
-    #     image = [elm.attrib for elm in root.findall(".//item/itunes:image", itunes_namespace)],
-    #     # print(image)
-    #     audio_file = [elm.attrib for elm in root.findall(".//item/enclosure", itunes_namespace)],
-    #     # print(audio_file)
-    #     guid = [elm.text for elm in root.findall(".//item/guid", itunes_namespace)],
-    #     # print(guid)
-    #     duration = [elm.text for elm in root.findall(".//item/itunes:duration", itunes_namespace)],
-    #     # print(duration)
-    #     explicit = [elm.text for elm in root.findall(".//item/itunes:explicit", itunes_namespace)],
-    #     # print(explicit)
-    
-    # )
-    
-    
-    # return {
-    #         'title': title,
-    #         'subtitle': subtitle,
-    #         'description' : description,
-    #         'guid' : guid,
-    #         'pubDate' : pubDate,
-    #         'duration' : duration,
-    #         'audio_file' : audio_file,
-    #         'image' : image,
-    #         'explicit' : explicit,
-    #     }
-    
- 
-
-
-# print(channel_parser())
-# print(item_parser())
-
 # channel_parser()
 # item_parser()
