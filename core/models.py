@@ -23,7 +23,7 @@ class Channel(models.Model):
     duration = models.CharField(max_length=50 , blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     image = models.URLField(blank=True, null=True)
-    owner = models.BooleanField(null=True)
+    owner = models.CharField(max_length=50, blank=True, null=True)
     author = models.TextField()
     source = models.URLField(blank=True, null=True)
     
