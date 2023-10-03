@@ -1,0 +1,58 @@
+services:
+  rabbitmq:
+    container_name: rebmitmq
+    image: rabbitmq:latest
+    networks:
+      - main
+    ports:
+      - "5672:5672"
+    restart: always
+
+  # postgres:
+  #   container_name: postgres
+  #   image: postgres:latest
+  #   environment:
+  #     - POSTGRES_DB=podcast_database
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=Akl79333
+  #   networks:
+  #     - main
+  #   ports:
+  #     - "5432:5432"
+  #   restart: always
+  #   volumes:
+  #   - postgres_data:/var/lib/postgresql/data
+
+  celery_worker:
+    container_name: celery_worker
+    depends_on:
+      - app
+      - rabbitmq
+      # - postgres
+    build: .
+    environment: 
+      - C_FORCE_ROOT="true"
+    networks:
+      - main
+    restart: always
+  
+  app:
+    build: .
+    command: sh -c "python manage.py migrate && gunicorn config.wsgi -b 0.0.0.0:8000"
+    container_name: app
+    volumes:
+      - .:/code/
+    depends_on:
+      # - postgres
+      - rabbitmq
+    expose:
+      - "8000"
+    networks:
+      - main
+    restart: always
+
+networks:
+  main:
+
+volumes:
+  postgres_data: 
