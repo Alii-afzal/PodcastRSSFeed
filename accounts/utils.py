@@ -28,3 +28,6 @@ def create_refresh_token(user_id, jti):
     }
     refresh_token = encode_jwt(refresh_token_payload)
     return refresh_token
+
+def create_jti():
+    return uuid.uuid4().hex
