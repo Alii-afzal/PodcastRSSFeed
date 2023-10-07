@@ -49,3 +49,11 @@ def cache_value_setter(request):
 def cache_key_parser(arg):
     return arg.split(" || ")
 
+
+def send_email(data):
+    email = EmailMessage(
+        subject=data['email_subject'],
+        body = data["email_body"],
+        to = [data["to_email"]]
+    )
+    email.send()
