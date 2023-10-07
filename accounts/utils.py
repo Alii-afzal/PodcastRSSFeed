@@ -31,3 +31,8 @@ def create_refresh_token(user_id, jti):
 
 def create_jti():
     return uuid.uuid4().hex
+
+def decode_jwt(token):
+    payload = jwt.decode(jwt=token, key=settings.SECRET_KEY, algorithms=["HS256"])
+    return payload
+    
