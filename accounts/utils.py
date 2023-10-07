@@ -39,4 +39,6 @@ def decode_jwt(token):
 def encode_jwt(payload):
     token = jwt.encode(payload=payload, key=settings.SECRET_KEY, algorithm=["HS256"])
     return payload
- 
+    
+def cache_key_setter(user_id, jti):
+    return f"user_{user_id} || {jti}"
