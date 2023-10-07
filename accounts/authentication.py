@@ -1,41 +1,47 @@
 import jwt
-from datetime import datetime, timedelta
 from rest_framework import exceptions
-
-def create_access_token(id):
-    return jwt.encode(
-        {
-            'user_id':id,
-            'exp':datetime.utcnow() + timedelta(seconds=30),
-            'iat': datetime.utcnow() #creation time
-           
-        }, 'access_secret', algorithm='HS256'
-    )
-    
-
-def decode_access_token(token):
-    try:
-        payload = jwt.decode(token, 'access_secret', algorithms='HS256')
-        return payload['user_id']
-    except:
-        raise exceptions.AuthenticationFailed('unauthenticated')   
-
-    
-    
-def create_refresh_token(id):
-    return jwt.encode(
-        {
-            'user_id':id,
-            'exp':datetime.utcnow() + timedelta(days=7),
-            'iat': datetime.utcnow() #creation time
-           
-        }, 'refresh_secret', algorithm='HS256'
-    )
+from rest_framework import authentication
+from django.contrib.auth.backends import BaseBackend
+from django.conf import settings
+# from django.core.cache import caches
+from .models import User
 
 
-def decode_refresh_token(id):
-    try:
-        payload = jwt.decode(token, 'refresh_secret', algorithms='HS256')
-        return payload['user_id']
-    except:
-        raise exceptions.AuthenticationFailed('unauthenticated')   
+class JWTAuthentication(authentication.BaseAuthentication):
+    def authenticate(self, request):
+        # Extract the JWT from the Authorization header
+        authoriztion_header = request.META.get('HTTP_AUTHORIZATION')
+        try:
+            token = self.get_the_token_from_header(jwt_token)
+            if not token:
+                return None
+        except:
+            return None
+
+        # Decode the JWT and verify its signature
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        except jwt.exceptions.InvalidSignatureError:
+            raise exceptions.AuthenticationFailed('Invalid signature')
+        except jwt.exceptions.ExpiredSignatureError:
+            raise exceptions.AuthenticationFailed('Access token expired')
+        except:
+            raise exceptions.AuthenticationFailed("Invalid token")
+        
+        jti = payload.get("jti")
+        
+        # if not caches.get(jti):
+        #     raise exceptions.AuthenticationFailed("Invalid token")
+        
+        try:
+            user = User.objects.filter(id=payload["user_id"]).first()
+            if user is None:
+                raise user.DoesNotExist["User not found"]
+            return user
+        except:
+            raise exceptions.AuthenticationFailed("User id not found in JWT")
+    @classmethod
+    def get_the_token_from_header(cls, token):
+        token = token.replace('Bearer', '').replace(' ', '')
+        return token
+
