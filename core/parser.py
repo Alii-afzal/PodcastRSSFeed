@@ -112,13 +112,14 @@ def item_parser():
     
     title = [elm.text for elm in root.findall(".//item/title", itunes_namespace)],
     # print(title)
-    
+    titles=[]
     for elm in root.findall(".//item", itunes_namespace):
         if elm.findall('.//title'):
             title = elm.find('.//title').text
         else:
             title = None
-        # print(title)
+        titles.append(title)
+        print(title)
         if elm.findall('.//subtitle'):
             subtitle = elm.findall('.//subtitle').text
         else:
@@ -160,19 +161,53 @@ def item_parser():
             explicit = None
         # print(explicit)
         
-    item = Episode.objects.create(
-        **{
-            'title': title,
-            'subtitle': subtitle,
-            'description' : description,
-            'guid' : guid,
-            'pubDate' : pubDate,
-            'duration' : duration,
-            'audio_file' : audio_file,
-            'image' : image,
-            'explicit' : explicit,
-        }
-    ) 
+    # item = Episode.objects.create(
+    #     **{
+    #         'title': title,
+    #         'subtitle': subtitle,
+    #         'description' : description,
+    #         'guid' : guid,
+    #         'pubDate' : pubDate,
+    #         'duration' : duration,
+    #         'audio_file' : audio_file,
+    #         'image' : image,
+    #         'explicit' : explicit,
+    #     }
+    # ) 
+    for title in titles:
+        Episode.objects.create(title=title)
     
 # channel_parser()
 # item_parser()
+
+# import requests
+# import xml.etree.ElementTree as ET
+# from your_app.models import Episode  # Replace 'your_app' with the actual name of your Django app
+
+# def item_parser():
+#     response = requests.get('https://rss.art19.com/apology-line')
+#     xml_data = response.text
+#     root = ET.fromstring(xml_data)
+#     itunes_namespace = {'itunes': 'http://www.itunes.com/dtds/podcast-1.0.dtd'}
+    
+#     # Create a list to store all the titles
+#     titles = []
+
+#     for elm in root.findall(".//item", itunes_namespace):
+#         if elm.findall('.//title'):
+#             title = elm.find('.//title').text
+#         else:
+#             title = None
+        
+#         # Append the title to the titles list
+#         titles.append(title)
+
+#     # Create Episode objects using the titles
+#     for title in titles:
+#         Episode.objects.create(title=title)
+
+
+
+
+
+
