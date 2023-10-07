@@ -6,8 +6,14 @@ from rest_framework.response import Response
 from .models import Episode, Channel
 from .parser import channel_parser, item_parser
 
-class ExtractXML(APIView):
+class ExtractXMLChannel(APIView):
     def get(self, request):
         parsed_data = Channel.objects.all()
         ser_data = ChannelSerializer(instance=parsed_data, many=True)
+        return Response(data=ser_data.data)
+    
+class ExtractXMLItems(APIView):
+    def get(self, request):
+        parsed_data = Episode.objects.all()
+        ser_data = EpisodeSerializer(instance=parsed_data, many=True)
         return Response(data=ser_data.data)
