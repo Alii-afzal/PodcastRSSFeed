@@ -36,3 +36,7 @@ def decode_jwt(token):
     payload = jwt.decode(jwt=token, key=settings.SECRET_KEY, algorithms=["HS256"])
     return payload
     
+def encode_jwt(payload):
+    token = jwt.encode(payload=payload, key=settings.SECRET_KEY, algorithm=["HS256"])
+    return payload
+ 
