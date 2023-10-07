@@ -42,3 +42,7 @@ def encode_jwt(payload):
     
 def cache_key_setter(user_id, jti):
     return f"user_{user_id} || {jti}"
+
+def cache_value_setter(request):
+    return request.META.get('HTTP_USER_AGENT', 'UNKNOWN')
+
