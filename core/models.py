@@ -24,7 +24,7 @@ class Channel(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     image = models.URLField(blank=True, null=True)
     owner = models.CharField(max_length=50, blank=True, null=True)
-    author = models.TextField()
+    author = models.TextField(blank=True, null=True)
     source = models.URLField(blank=True, null=True)
     
     def __str__(self):
