@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from .serializers import ChannelSerializer, EpisodeSerializer
 from rest_framework.response import Response
 from .models import Episode, Channel
-from .parser import channel_parser, item_parser
+from .parser import XMLParser
 
 class ExtractXMLChannel(APIView):
     def get(self, request):
