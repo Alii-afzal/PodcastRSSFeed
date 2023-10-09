@@ -77,3 +77,7 @@ def delete_cache(key):
     cache.delete(f'{key}')
 
 
+def validate_cached_token(refresh_token):
+    jti = refresh_token.get('jti')
+    cached_token = check_cache(jti)
+    return cached_token
