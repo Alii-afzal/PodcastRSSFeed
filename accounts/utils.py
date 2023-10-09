@@ -73,3 +73,7 @@ def check_cache(jti):
         return cache_existence
     return None
 
+def delete_cache(key):
+    cache.delete(f'{key}')
+
+
