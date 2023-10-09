@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',
     'corsheaders',
     'accounts.apps.AccountsConfig',
     'core.apps.CoreConfig',
@@ -163,7 +162,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    # Add other authentication backends if needed
+    'accounts.authbackend.AuthentictationBackend'
 ]
 
 REST_FRAMEWORK = {
@@ -189,5 +188,4 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-import datetime
-REFRESH_EXPIRED_TIME = datetime.timedelta(days=7)
+
