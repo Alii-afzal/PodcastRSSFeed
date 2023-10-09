@@ -62,6 +62,10 @@ class XMLParser():
         channel.save()
         
     def item_parser():
+        response = requests.get('https://rss.art19.com/apology-line')
+        xml_data = response.text
+        root = ET.fromstring(xml_data)
+        itunes_namespace = {'itunes':'http://www.itunes.com/dtds/podcast-1.0.dt'}
         all_episodes = []  # Create a list to store all Episode dictionaries
         for elm in root.findall(".//item", itunes_namespace):
             title = elm.find('.//title').text if elm.find('.//title') is not None else None
@@ -91,3 +95,11 @@ class XMLParser():
         # Create Episode objects using the data collected in the loop
         for episode_data in all_episodes:
             Episode.objects.create(**episode_data)
+            
+    # def update_episode(self):
+    #     new_items=[]
+    #     self.item_parser()
+    #     for item in self.all_episodes:
+    #         if not Episode.objects.filter(guid=item['guid']).exists():
+    #             new_items.append(item)
+    #     # for 
