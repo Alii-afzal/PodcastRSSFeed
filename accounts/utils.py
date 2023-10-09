@@ -81,3 +81,7 @@ def validate_cached_token(refresh_token):
     jti = refresh_token.get('jti')
     cached_token = check_cache(jti)
     return cached_token
+
+
+def check_exp_date(exp_date):
+    return datetime.now() < exp_date
