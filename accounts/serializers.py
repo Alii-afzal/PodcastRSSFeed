@@ -8,11 +8,13 @@ from .models import User
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "phone_number", "email", "password"]
+        fields = ["phone_number", "email", "password", "full_name"]
         extra_kwargs = {
             'password': {'write_only': True},
-            # 'email' : {'valiators': (clean_email, )}
         }
+    
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
     
     def validate_username(self, value):
         if value == 'admin':
@@ -20,14 +22,5 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return value
         
 class UserLoginSerializer(serializers.Serializer):
-    class Meta:
-        model:User
-        fields = ["id", "email", "password"]
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
-    
-    
-    
-    
-
+    email = serializers.CharField(max_length=60)
+    password = serializers.CharField(max_length=60)
