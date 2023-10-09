@@ -1,27 +1,29 @@
-# from rest_framework_simplejwt.authentication import RefreshTokenAuthentication
+import jwt
+import datetime
+from django.core.cache import cache
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import get_authorization_header
-from accounts.models import User
-from .utils import create_jti, create_access_token, create_refresh_token, cache_key_setter, cache_value_setter
-from accounts.serializers import UserRegisterSerializer, UserLoginSerializer
-# from accounts.authentication import create_access_token, create_refresh_token, decode_access_token, decode_refresh_token
-from rest_framework import permissions
-from django.contrib.auth import authenticate
-# from django.core.cache import caches
 from rest_framework.exceptions import AuthenticationFailed, APIException
-import jwt
-import datetime
-# from django.conf import settings
+from rest_framework import permissions
+
+from .authentication import JWTAuthentication
+from accounts.models import User
+from .utils import create_jti, create_access_token, create_refresh_token, cache_key_setter, cache_value_setter, decode_jwt, delete_cache, cache_refresh_token, validate_cached_token
+from accounts.serializers import UserRegisterSerializer, UserLoginSerializer
+
+from .authbackend import AuthenticationBackend
+
 from config import settings
-    
+  
 class RegisterAPIView(APIView):
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.create(serializer.validated_data)
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
     
 class LoginAPIView(APIView):
@@ -32,9 +34,12 @@ class LoginAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data.get('email')
         password = serializer.validated_data.get('password')
-        user = authenticate(request, email=email, password=password)
+        auth = AuthenticationBackend()
+        user = auth.authenticate(request, email=email, password=password)
         print(user)
         print(request.data)
+        print(email)
+        print(password)
         # print(serializer.errors)
         if user is None:
             return Response(data={'message': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
@@ -42,10 +47,11 @@ class LoginAPIView(APIView):
         access_token = create_access_token(user.id, jti)
         refresh_token = create_refresh_token(user.id, jti)
         
-        key = cache_key_setter(user_id, jti)
+        key = cache_key_setter(user.id, jti)
         value = cache_value_setter(request)
-        refresh_expired_time = settings.REFRESH_EXPIRED_TIME
-        # caches.set(key=key, value=value, timeout=refresh_expired_time)
+        # refresh_expired_time = settings.REFRESH_EXPIRED_TIME
+        # cache.set(key=key, value=value, timeout=refresh_expired_time)
+        cache_refresh_token(decode_jwt(refresh_token))
         
         data = {
             "access": access_token,
@@ -55,36 +61,48 @@ class LoginAPIView(APIView):
         return Response(data=data, status=status.HTTP_201_CREATED)
 
 
-# class RefreshAPIView(APIView):
-#     authentication_classes = [RefreshTokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-    
-#     def post(self, request):
-#         user = request.issu
-#         payload = request.auth
+
+class RefreshAPIView(APIView):
+    def post(self, request):
+        refresh_token = request.data.get('refresh_token')
+        refresh_token = decode_jwt(refresh_token)
         
-#         jti = payload["jti"]
-#         chaches['auth'].delete(f"user_{user.id} || {jti}")
+        if not validate_cached_token(refresh_token):
+            return Response(data={"message":"Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_id = refresh_token.get('user_id')
+        jti = refresh_token.get('jti')
         
-#         jti = jti_maker()
-#         access_token = create_access_token(user_id, jti)
-#         refresh_token =create_refresh_token(user_id, jti)
+        access_token = create_access_token(user_id, jti)
+        refresh_token = create_refresh_token(user_id, jti)
         
-#         key = cache_key_setter(user_id, jti)
-#         value = cache_value_setter(request)
-#         caches["auth"].set(key, value)
+        # key = cache_key_setter(user_id, jti)
+        # value = cache_value_setter(request)
+
+        delete_cache(jti)
+        # cache.set(key=key, value=value, timeout=refresh_expired_time)
+        cache_refresh_token(decode_jwt(refresh_token))
         
-#         data = {
-#             "access": access_token,
-#             "refresh": refresh_token
-#         }
+        data = {
+            "access" : access_token, 
+            "refresh" : refresh_token,
+        }
         
-#         return Response(data, status=status.HTTP_201_CREATED)
+        return Response(data=data, status=status.HTTP_201_CREATED)
+
+
+class LogoutAPIView(APIView):
+    def post(self, request):
+        access_token = request.data.get('access_token')
+        if not access_token:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        jti = decode_jwt(access_token).get('jti')
+        delete_cache(jti)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 # class LogoutAPIView(APIView):
-#     authentication_classes = [RefreshTokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-
 #     def post(self, request):
 #         try:
 #             payload = request.auth
@@ -95,4 +113,10 @@ class LoginAPIView(APIView):
 #             return Response(data={"message":True}, status=status.HTTP_200_OK)
 #         except Exception as e:
 #             return Response(data={"message":str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+class AuthenticatedView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (JWTAuthentication, )
+
+    def get(self, request):
+        return Response(data={"message": "you are authenticated"}, status=status.HTTP_200_OK)
