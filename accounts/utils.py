@@ -67,3 +67,9 @@ def cache_refresh_token(refresh_token):
 
     cache.set(key=jti, value=user_id, timeout=timeout)
     
+def check_cache(jti):
+    cache_existence = cache.get(jti)
+    if bool(cache_existence):
+        return cache_existence
+    return None
+
