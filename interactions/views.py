@@ -26,3 +26,14 @@ class LikeAPIView(APIView):
         else:
             msg = {'status':'This episode is already liked!'}
             return Response(msg, status=status.HTTP_200_OK)
+    
+    def delete(self, request, episode_id):
+        episode = PodcastEpisodeData.objects.get(id=episode_id)
+        try:
+            like = Like.objects.get(user=request.user, episode=episode)
+            like.delete()
+            msg = {'status':'Unliked!'}
+            return Response(msg, status=status.HTTP_204_NO_CONTENT)
+        except Like.DoesNotExist:
+            msg = {'status':'This episode is not liked!'}
+            return Response(msg, status=status.HTTP_404_NOT_FOUND)
