@@ -37,3 +37,14 @@ class LikeAPIView(APIView):
         except Like.DoesNotExist:
             msg = {'status':'This episode is not liked!'}
             return Response(msg, status=status.HTTP_404_NOT_FOUND)
+        
+class CommentAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+    serializer_class = CommentSerializer
+    def post(self, request, episoe_id):
+        episode = Episode.objects.get(id=episoe_id)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
