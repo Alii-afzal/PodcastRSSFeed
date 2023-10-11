@@ -1,32 +1,28 @@
-from django.shortcuts import render
+from django.contrib.contenttypes.models import ContentType
+from django.http import Http404
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from accounts.authentication import JWTAuthentication
-from core.models import Channel, Episode
-from accounts.models import User
-from .models import Like
-from .serializers import LikeSerializer, CommentSerializer
-# Create your views here.
-class LikeAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes=[IsAuthenticated]
-    def post(self, request):
-        serializer = LikeSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data.get('user')
-        episode = serializer.validated_data.get('episode')
-        # user = User.objects.filter(id=user_id)
-        # episode = Episode.objects.filter(id=episode_id)
-        like = Like.objects.get_or_create(user=user, episode=episode)
+from .models import Like, Comment, Subscribe, BookMark
 
-class CommentAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes=[IsAuthenticated]
+from .serializers import LikeSerializer, CommentSerializer, SubscribeSerializer, BookMarkSerializer
+from core.models import Channel, Episode
+from accounts.authentication import JWTAuthentication
+
+
+class LikeAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = LikeSerializer
     
-    def post(self, request):
-        serializer = CommentSerializer(data=request.data)
-        user = serializer.get
-        episode = serializer.get_fields
+    def post(self, request, episode_id):
+        episode = Episode.objects.get(id=episode_id)
+        user = request.user
         
-    
-    
+        like, created = Like.objects.get_or_create(user=user, episode=episode)
+        if existing_like:
+            serializer = self.serializer_class(like)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            msg = {'status':'This episode is already liked!'}
+            return Response(msg, status=status.HTTP_200_OK)
