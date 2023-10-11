@@ -78,3 +78,15 @@ class BookMarkSrializer(APIView):
         else:
             msg = {'status':'This episode is already bookmarked'}
             return Response(mag, status=status.HTTP_200_OK)
+        
+    def delete(self, request, episode_id):
+        episode = PodcastEpisodeData.objects.get(id=episode_id)
+        try:
+            bookmarked_episode = BookMark.objects.get(user=request.user, episode=episode)
+            bookmarked_episode.delete()
+
+            msg = {'status':'No longer bookmarked'}
+            return Response(msg, status=status.HTTP_204_NO_CONTENT)
+        except BookMark.DoesNotExist:
+            msg = {'status':'This episode was not bookmarked'}
+            return Response(msg, status=status.HTTP_404_NOT_FOUND)
