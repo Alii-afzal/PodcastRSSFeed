@@ -7,8 +7,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            XMLParser.channel_parser()
-            XMLParser.item_parser()    
+            xml_parser = XMLParser()
+            xml_parser.channel_parser()
+            xml_parser.item_parser()
+                
             self.stdout.write(
                     self.style.SUCCESS(
                         f"Successfully parsed and updated podcast data for all models)"
