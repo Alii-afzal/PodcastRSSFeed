@@ -61,3 +61,20 @@ class SubscribeAPIView(APIView):
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class BookMarkSrializer(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+    serializer_class = BookMarkSerializer
+    
+    def post(self, request, episod_id):
+        episode = Episode.objects.get(id=episod_id)
+        bookmark_episode, created = BookMark.objects.get_or_create(user=request.user, episode=episode)
+        
+        if created:
+            serialzer = self.serializer_class(bookmark_episode)
+            msg= {'status':'Episode Bookmarked.'}
+            return Response(msg, status=status.HTTP_201_CREATED)
+        else:
+            msg = {'status':'This episode is already bookmarked'}
+            return Response(mag, status=status.HTTP_200_OK)
