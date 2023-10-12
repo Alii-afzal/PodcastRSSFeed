@@ -8,8 +8,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             xml_parser = XMLParser()
-            xml_parser.channel_parser()
+            # xml_parser.save_category_in_database()
             xml_parser.item_parser()
+            xml_parser.save_items_in_database()
+            
+            xml_parser.channel_parser()
+            xml_parser.seve_channel_in_database()
+            
+            # xml_parser.seve_channel_in_database()
                 
             self.stdout.write(
                     self.style.SUCCESS(
