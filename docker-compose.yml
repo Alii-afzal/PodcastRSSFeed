@@ -21,10 +21,11 @@ services:
   #     - "5432:5432"
   #   restart: always
   #   volumes:
-  #   - postgres_data:/var/lib/postgresql/data
+  #     - postgres_data:/var/lib/postgresql/data
 
   celery_worker:
     container_name: celery_worker
+    command: celery -A config worker -l INFO
     depends_on:
       - app
       - rabbitmq
@@ -38,7 +39,7 @@ services:
   
   app:
     build: .
-    command: sh -c "python manage.py migrate && gunicorn config.wsgi -b 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     container_name: app
     volumes:
       - .:/code/
@@ -51,8 +52,22 @@ services:
       - main
     restart: always
 
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    networks:
+      - main
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes: 
+      - redis_data:/data
+  
+
 networks:
   main:
 
 volumes:
-  postgres_data: 
+  postgres_data:
+  redis_data:
