@@ -12,11 +12,11 @@ class JWTAuthentication(authentication.BaseAuthentication):
         # Extract the JWT from the Authorization header
         authoriztion_header = request.META.get('HTTP_AUTHORIZATION')
         try:
-            token = self.get_the_token_from_header(jwt_token)
+            token = self.get_the_token_from_header(authoriztion_header)
             if not token:
-                return None
+                return None, None
         except:
-            return None
+            return None, None
 
         # Decode the JWT and verify its signature
         try:
@@ -37,7 +37,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
             user = User.objects.filter(id=payload["user_id"]).first()
             if user is None:
                 raise user.DoesNotExist["User not found"]
-            return user
+            return user, None
         except:
             raise exceptions.AuthenticationFailed("User id not found in JWT")
     @classmethod
