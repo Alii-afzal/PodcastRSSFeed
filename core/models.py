@@ -26,6 +26,7 @@ class Channel(models.Model):
     owner = models.CharField(max_length=50, blank=True, null=True)
     author = models.TextField(blank=True, null=True)
     source = models.URLField(blank=True, null=True)
+    xml_link = models.URLField(unique=True)
     
     def __str__(self):
         return self.title
