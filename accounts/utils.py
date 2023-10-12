@@ -9,7 +9,7 @@ def create_access_token(user_id, jti):
     access_token_payload = {
         'token_type':'access',
         'user_id':user_id,
-        'exp':datetime.utcnow() + timedelta(seconds=30),
+        'exp':datetime.utcnow() + timedelta(minutes=50),
         'iat': datetime.utcnow(), #creation time
         'jti':jti,
     }
