@@ -15,3 +15,9 @@ celery_app.conf.accept_content = ['json', 'pickle']
 celery_app.conf.result_expires = timedelta(days=1)
 celery_app.conf.task_always_eager = False
 celery_app.conf.worker_prefetch_multiplier = 4
+
+# CELERY_TIMEZONE = TOMEZONE
+
+# app.conf.beat_schedule = {
+    
+# }
