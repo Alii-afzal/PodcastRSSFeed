@@ -5,7 +5,8 @@ from .models import Channel, Episode, Category
 
 class XMLParser():
     def __init__(self):
-        self.response = requests.get('https://rss.art19.com/apology-line')
+        self.xml_link = 'https://rss.art19.com/apology-line'
+        self.response = requests.get(self.xml_link)
         self.xml_data = self.response.text
         self.root = ET.fromstring(self.xml_data)
         self.itunes_namespace = {'itunes':'http://www.itunes.com/dtds/podcast-1.0.dtd'}
@@ -25,8 +26,8 @@ class XMLParser():
         else:
             return None
 
-    # def XML_link_parser():
-    #     pass
+    def xml_link_parser():
+        xml_link = response
 
     def channel_parser(self):
         for elm in self.root.findall(".//channel", self.itunes_namespace):
@@ -40,7 +41,8 @@ class XMLParser():
             category = elm.find('.//itunes:category', self.itunes_namespace).get('text') if elm.find('.//itunes:category', self.itunes_namespace) is not None else None
             source =elm.find('.//link').text if elm.find('.//link') is not None else None
             owner = self.convert_text_to_boolianfield(elm.find('.//itunes:owner/itunes:name', self.itunes_namespace)) if elm.find('.//itunes:owner/itunes:name', self.itunes_namespace) is not None else None
-
+            xml_link = self.xml_link
+            
         category = Category(
             title=category
         )
@@ -56,7 +58,8 @@ class XMLParser():
                 author = author,
                 category=category,
                 source = source,
-                owner = owner,   
+                owner = owner,
+                xml_link=xml_link   
         ) 
 
         channel.save()
@@ -92,6 +95,26 @@ class XMLParser():
         for episode_data in all_episodes:
             Episode.objects.create(**episode_data)
             
+    def update_episodes(self):
+        new_episodes = self.item_parser()
+        
+        existing_episodes = Episode.objects.all()
+        
+        existing_guids = set(existing.guid for existing in existing_episodes)   
+        
+        episodes_to_add = []
+        
+        for episode in new_episodes:
+            if episode['guid'] not in existing_guids:
+                episodes_to_add.append(episode) 
+                
+        for episode_data in episodes_to_add:
+            Episode.objects.create(**episode_data)   
+            
+    
+    
+    
+    
     # def update_episode(self):
     #     new_items=[]
     #     self.item_parser()
