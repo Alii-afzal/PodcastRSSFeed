@@ -8,7 +8,7 @@ class LikeSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'content', 'episode', 'is_accepted')
+        fields = ('id', 'user', 'content', 'episode')
         
 class SubscribeSerializer(serializers.ModelSerializer):
     class Meta:
