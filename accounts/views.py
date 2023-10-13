@@ -36,10 +36,10 @@ class LoginAPIView(APIView):
         password = serializer.validated_data.get('password')
         auth = AuthenticationBackend()
         user = auth.authenticate(request, email=email, password=password)
-        print(user)
-        print(request.data)
-        print(email)
-        print(password)
+        # print(user)
+        # print(request.data)
+        # print(email)
+        # print(password)
         # print(serializer.errors)
         if user is None:
             return Response(data={'message': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
@@ -47,8 +47,8 @@ class LoginAPIView(APIView):
         access_token = create_access_token(user.id, jti)
         refresh_token = create_refresh_token(user.id, jti)
         
-        key = cache_key_setter(user.id, jti)
-        value = cache_value_setter(request)
+        # key = cache_key_setter(user.id, jti)
+        # value = cache_value_setter(request)
         # refresh_expired_time = settings.REFRESH_EXPIRED_TIME
         # cache.set(key=key, value=value, timeout=refresh_expired_time)
         cache_refresh_token(decode_jwt(refresh_token))
@@ -78,7 +78,7 @@ class RefreshAPIView(APIView):
         
         # key = cache_key_setter(user_id, jti)
         # value = cache_value_setter(request)
-
+ 
         delete_cache(jti)
         # cache.set(key=key, value=value, timeout=refresh_expired_time)
         cache_refresh_token(decode_jwt(refresh_token))
