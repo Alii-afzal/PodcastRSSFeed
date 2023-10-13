@@ -66,13 +66,11 @@ class SubscribeAPIView(APIView):
     authentication_classes = (JWTAuthentication,)
     serializer_class = SubscribeSerializer
     
-    x = []
-    print(x)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid() and serializer.validated_data.get('user') not in self.x:
+        if serializer.is_valid():
             
-            self.x.append(serializer.validated_data.get('user'))
+            # self.x.append(serializer.validated_data.get('user'))
             
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
