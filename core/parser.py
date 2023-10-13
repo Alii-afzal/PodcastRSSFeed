@@ -32,6 +32,11 @@ class XMLParser():
     def xml_link_parser():
         # xml_link = response
         pass
+    
+    # def get_element_from_channel(self, tag):
+    #     for elm in self.root.findall(".//channel", self.itunes_namespace):
+    #         element = elm.find(tag).text if elm.find(tag) is not None else None
+    #     return element
 
     def channel_parser(self):
         for elm in self.root.findall(".//channel", self.itunes_namespace):
@@ -46,11 +51,26 @@ class XMLParser():
             source =elm.find('.//link').text if elm.find('.//link') is not None else None
             owner = self.convert_text_to_boolianfield(elm.find('.//itunes:owner/itunes:name', self.itunes_namespace)) if elm.find('.//itunes:owner/itunes:name', self.itunes_namespace) is not None else None
             xml_link = self.xml_link
-            
-        category = Category(
-            title=category
-        )
-        category.save()
+    
+    # def channel_parser(self):
+    #     title = self.get_element_from_channel('.//title')
+    #     subtitle = self.get_element_from_channel('.//subtitle')
+    #     description = self.get_element_from_channel('.//description')
+    #     pubDate = self.convert_text_to_datefield(self.get_element_from_channel('.//subtitle')) if elm.find('.//pubDate') is not None else None
+    #     image = elm.find('.//itunes:image', self.itunes_namespace).attrib.get('href') if elm.find('.//itunes:image', self.itunes_namespace) is not None else None
+    #     language = elm.find('.//language').text if elm.find('.//language') is not None else None
+    #     author = elm.find('.//itunes:author', self.itunes_namespace).text if elm.find('.//itunes:author', self.itunes_namespace) is not None else None
+    #     category = elm.find('.//itunes:category', self.itunes_namespace).get('text') if elm.find('.//itunes:category', self.itunes_namespace) is not None else None
+    #     source =elm.find('.//link').text if elm.find('.//link') is not None else None
+    #     owner = self.convert_text_to_boolianfield(elm.find('.//itunes:owner/itunes:name', self.itunes_namespace)) if elm.find('.//itunes:owner/itunes:name', self.itunes_namespace) is not None else None
+    #     xml_link = self.xml_link
+          
+        # category = Category(
+        #     title=category
+        # )
+        # category.save()
+        
+        category = Category.objects.create(title=category)
         
         # category = {
         #     "title":category
@@ -89,14 +109,17 @@ class XMLParser():
         return self.channel_data, self.category_data
     
     def seve_channel_in_database(self):
-        for channel in self.channel_data:
-            Channel.objects.create(**channel)
+        for ch in self.channel_data:
+            Channel.objects.create(**ch)
+
     
     # def save_category_in_database(self):
     #     for category in self.category_data:
     #         Category.objects.create(**category)
         
     def item_parser(self):
+        # channel = self.root.find(".//channel/title", self.itunes_namespace).text
+        # print(channel)
         for elm in self.root.findall(".//item", self.itunes_namespace):
             title = elm.find('.//title').text if elm.find('.//title') is not None else None
             subtitle = elm.find('.//subtitle').text if elm.find('.//subtitle') is not None else None
@@ -107,9 +130,11 @@ class XMLParser():
             audio_file = elm.find('.//enclosure').attrib.get('url') if elm.find('.//enclosure') is not None else None
             guid = elm.find('.//guid').text if elm.find('.//guid') is not None else None
             explicit = self.convert_text_to_boolianfield(elm.find('.//itunes:explicit', self.itunes_namespace).text) if elm.find('.//itunes:explicit', self.itunes_namespace) is not None else None
-
+            # channel = 
+            # print(channel)
             episode_data = {
                 'title': title,
+                # 'channel': channel,
                 'subtitle': subtitle,
                 'description': description,
                 'pubDate': pubDate,
@@ -128,26 +153,27 @@ class XMLParser():
         for episode_data in self.all_episodes:
             Episode.objects.create(**episode_data)
         
-    # def update_episodes(self):
-    #     new_episodes = self.item_parser()
-    #     print(new_episodes)
-        
+    def update_episodes(self):
+        new_episodes = self.item_parser()
+        # new_episodes_guids = set(newepisode.get('guid') for newepisode in new_episodes) 
+        existing_episodes = Episode.objects.all()
+        existing_guids = set(existing.guid for existing in existing_episodes)
+        # print(new_episodes_guids - existing_guids)
+        print('hasan')
+        for episode in set(new_episodes):
+            print('ramin')
+            if episode.get('guid', 'test') not in existing_guids:
+                print(episode.get('guid'))
+                print("++++++++++++++++++++++++++++++++++++++")
+                # episodes_to_add.append(episode) 
+                Episode.objects.create(**episode)   
+    
+    # def update_eposdoe(self):
     #     existing_episodes = Episode.objects.all()
-    #     print(existing_episodes)
-        
-    #     existing_guids = set(existing.guid for existing in existing_episodes)   
-        
-    #     episodes_to_add = []
-        
-    #     for episode in new_episodes:
-    #         if episode['guid'] not in existing_guids:
-    #             episodes_to_add.append(episode) 
-                
-    #     for episode_data in episodes_to_add:
-    #         Episode.objects.create(**episode_data)   
             
+        
     
-    
+
     
     
     # def update_episode(self):
@@ -157,4 +183,5 @@ class XMLParser():
     #         if not Episode.objects.filter(guid=item['guid']).exists():
     #             new_items.append(item)
     #     # for 
-    
+
+xml_parser = XMLParser() 
