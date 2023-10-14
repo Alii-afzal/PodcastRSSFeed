@@ -155,33 +155,17 @@ class XMLParser():
         
     def update_episodes(self):
         new_episodes = self.item_parser()
-        # new_episodes_guids = set(newepisode.get('guid') for newepisode in new_episodes) 
+
         existing_episodes = Episode.objects.all()
         existing_guids = set(existing.guid for existing in existing_episodes)
-        # print(new_episodes_guids - existing_guids)
-        print('hasan')
-        for episode in set(new_episodes):
-            print('ramin')
-            if episode.get('guid', 'test') not in existing_guids:
-                print(episode.get('guid'))
-                print("++++++++++++++++++++++++++++++++++++++")
-                # episodes_to_add.append(episode) 
-                Episode.objects.create(**episode)   
-    
-    # def update_eposdoe(self):
-    #     existing_episodes = Episode.objects.all()
-            
         
-    
-
-    
-    
-    # def update_episode(self):
-    #     new_items=[]
-    #     self.item_parser()
-    #     for item in self.all_episodes:
-    #         if not Episode.objects.filter(guid=item['guid']).exists():
-    #             new_items.append(item)
-    #     # for 
-
+        # for episode_guid in existing_episodes:
+        #     if episode_guid not in new_episodes:
+        #         pass
+        
+        for episode in new_episodes:
+            if episode['guid'] not in existing_guids:
+                print(episode['guid'])
+                Episode.objects.create(**episode)   
+ 
 xml_parser = XMLParser() 
