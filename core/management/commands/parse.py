@@ -15,6 +15,10 @@ class Command(BaseCommand):
             xml_parser.channel_parser()
             xml_parser.seve_channel_in_database()
 
+            xml_parser.xml_link_parse()
+            
+            # update_podcast.delay('https://rss.art19.com/apology-line')
+            # update_all_podcasts.delay()
                 
             self.stdout.write(
                     self.style.SUCCESS(
