@@ -13,6 +13,18 @@ class RetryTask(Task):
     worker_concurrency = 4
     prefetch_multiplier = 1
 
+
+@shared_task(bind=True, base=RetryTask)
+def update_all_podcasts(self):
+    xml_links = XmlLink.objects.all()
+
+    for xml_link in xml_links:
+        print(xml_link)
+        url = xml_link.xml_link
+        update_podcast.delay(url)
+
+    return "URLs sent to parsing!"
+
 @shared_task(bind=True, base=RetryTask)
 def update_podcast(self, url):
     data = requests.get(url).text
