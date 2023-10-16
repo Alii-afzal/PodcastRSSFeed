@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from .models import Channel, Episode, Category, XmlLink
 
 class XMLParser():
-    def __init__(self, xml_link=None):
+    def __init__(self):
         self.xml_link ='https://rss.art19.com/apology-line'
         self.response = requests.get(self.xml_link)
         self.xml_data = self.response.text
@@ -54,7 +54,7 @@ class XMLParser():
             category = elm.find('.//itunes:category', self.itunes_namespace).get('text') if elm.find('.//itunes:category', self.itunes_namespace) is not None else None
             source =elm.find('.//link').text if elm.find('.//link') is not None else None
             owner = self.convert_text_to_boolianfield(elm.find('.//itunes:owner/itunes:name', self.itunes_namespace)) if elm.find('.//itunes:owner/itunes:name', self.itunes_namespace) is not None else None
-            xml_link = self.xml_link
+            # xml_link = self.xml_link
     
     
         category = Category.objects.create(title=category)
@@ -70,7 +70,7 @@ class XMLParser():
                 'category' : category,
                 'source' : source,
                 'owner' : owner,
-                'xml_link' : xml_link,   
+                # 'xml_link' : xml_link,   
         }
         self.channel_data.append(channel)
         return self.channel_data, self.category_data
