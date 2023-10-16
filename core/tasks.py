@@ -12,3 +12,11 @@ class RetryTask(Task):
     task_acks_late = True
     worker_concurrency = 4
     prefetch_multiplier = 1
+
+@shared_task(bind=True, base=RetryTask)
+def update_podcast(self, url):
+    data = requests.get(url).text
+    parser = XMLParser(xml_link=data)
+    parser.update_episodes()
+
+    return 'Update podcast task is complete'
