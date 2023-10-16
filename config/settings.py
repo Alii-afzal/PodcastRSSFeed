@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import pytz
+import os
+
 import environ
 
 env = environ.Env()
@@ -24,7 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(ho&04&xs9in+=wvc$m&kvwy6bcrfy%$%*g#4-^fjmv-by8r(%"
+SECRET_KEY = env("SECRET_KEY")
+# print(SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -109,7 +112,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "LOCATION": "redis://redis:6379",
         # "TIMEOUT": 60*15
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
@@ -174,21 +177,11 @@ REST_FRAMEWORK = {
     ],
 }
 
-# REST_FRAMEWORK = {
-#    'DEFAULT_PERMISSION_CLASSES': (
-#        'rest_framework.permissions.IsAdminUser', 
-#        ),
-# }
-
-
-# REST FRAMEWORK
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': (
-#         'rest_framework.permissions.DjangoModelPermissions',
-#     )
-# }
-
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+REDIS_HOST = env("REDIS_HOST")
+REDIS_PORT = env("REDIS_PORT")
 
+CELERY_BROKER_URL = env("CELERY_BROKER", default=f'redis://{REDIS_HOST}:{REDIS_PORT}')
+CELERY_RESULT_BACKEND = env("CELERY_BACKEND", default=f'redis://{REDIS_HOST}:{REDIS_PORT}')
