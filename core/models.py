@@ -12,7 +12,7 @@ class Category(models.Model):
 
 class XmlLink(models.Model):
     xml_link = models.URLField(unique=True)
-    # rss_type = models.ForeignKey(Type, on_delete=models.PROTECT)
+    # rss_type = models.ForeignKey(Type, on_delete=models.PROTECT) 
 
     def __str__(self):
         return self.xml_link
@@ -29,8 +29,8 @@ class Channel(models.Model):
     owner = models.CharField(max_length=50, blank=True, null=True)
     author = models.TextField(blank=True, null=True)
     source = models.URLField(blank=True, null=True)
-    xml_link = models.ForeignKey(XmlLink, on_delete=models.CASCADE)
-    
+    # xml_link = models.ForeignKey(XmlLink, on_delete=models.CASCADE)
+     
     def __str__(self):
         return self.title
     
