@@ -31,6 +31,8 @@ services:
       - rabbitmq
       # - postgres
     build: .
+    volumes:
+      - .:/code/
     environment: 
       - C_FORCE_ROOT="true"
     networks:
