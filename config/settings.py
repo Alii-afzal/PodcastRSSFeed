@@ -188,3 +188,56 @@ REDIS_PORT = env("REDIS_PORT")
 
 CELERY_BROKER_URL = env("CELERY_BROKER", default=f'redis://{REDIS_HOST}:{REDIS_PORT}')
 CELERY_RESULT_BACKEND = env("CELERY_BACKEND", default=f'redis://{REDIS_HOST}:{REDIS_PORT}')
+
+# CELERY_BEAT_SCHEDULE = {
+#     'update-podcast': {
+#         'task': 'core.tasks.update_all_podcasts',
+#         'schedule': crontab(minute=0, hour=4),
+#         # 'args': (16, 16),
+#     },
+# }
+
+CELERY_BEAT_SCHEDULE = {
+    "sample_task": {
+        "task": "episode.tasks.update_all_podcast",
+        "schedule": crontab(minute="*/1"),
+    },
+}
+
+
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'simple': {
+#             'format': '[%(asctime)s] %(levelname)s|%(name)s|%(message)s',
+#             'datefmt': '%Y-%m-%d %H:%M:%S',
+#         },
+#     },
+#     'handlers': {
+#         'applogfile': {
+#             'level': 'DEBUG',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': '/webapps/myproject/logs/django/myproject.log',
+#             'maxBytes': 1024*1024*15,  # 15MB
+#             'backupCount': 10,
+#             'formatter': 'simple',
+#         },
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'simple'
+#         }
+#     },
+#     'loggers': {
+#         'app1': {
+#             'handlers': ['applogfile', 'console'],
+#             'level': 'DEBUG',
+#         },
+#         'app2': {
+#             'handlers': ['applogfile', 'console'],
+#             'level': 'DEBUG',
+#         }
+#     }
+# }
