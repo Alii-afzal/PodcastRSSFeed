@@ -25,6 +25,10 @@ class RegisterAPIView(APIView):
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.create(serializer.validated_data)
+        
+        request_META = request.META.get('HTTP_USER_AGENT')
+        email = request.data.get('email')
+        Publish().register(email=email, request_META=request_META)
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
     
 class LoginAPIView(APIView):
