@@ -25,6 +25,12 @@ def login_consume():
     channel.basic_consume(queue='login', on_message_callback=login_callback)
     
     channel.start_consuming()
+    
+def register_callback(chanel, method, properties, body):
+    data = json.loads(body)
+    user = User.objects.get(email=data['email'])
+    notification_info = NotificationInfo.objects.create(message=data['message'])
+    Notification.objects.create(user = user, message = notification_info)
 
 def register_consume():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=settings.RABBITMQ_HOST))
