@@ -2,7 +2,10 @@ import requests
 from celery import shared_task, Task
 from .parser import XMLParser
 from .models import Channel, Episode, XmlLink
+import logging
 
+
+logger = logging.getLogger(__name__)
 
 class RetryTask(Task):
     autoretry_for = (Exception,)
