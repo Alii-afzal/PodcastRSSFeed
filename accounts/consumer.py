@@ -11,7 +11,12 @@ from accounts.models import User, NotificationInfo, Notification
 from interactions.models import BookMark
 from config import settings
 
-
+def login_callback(ch, method, properties, body):
+    data = json.loads(body)
+    user = User.objects.get(email=data['email'])
+    notification_info = NotificationInfo.objects.create(message=data['message'])
+    Notification.objects.create(user=user, message=notification_info)
+    
 def login_consume():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=settings.RABBITMQ_HOST))
     channel = connection.channel()
