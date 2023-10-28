@@ -1,7 +1,5 @@
 from django.db import models
 
-class Type(models.Model):
-    pass
 
 class Category(models.Model):
     title = models.CharField(max_length=50)
@@ -29,7 +27,7 @@ class Channel(models.Model):
     owner = models.CharField(max_length=50, blank=True, null=True)
     author = models.TextField(blank=True, null=True)
     source = models.URLField(blank=True, null=True)
-    # xml_link = models.ForeignKey(XmlLink, on_delete=models.CASCADE)
+    xml_link = models.ForeignKey(XmlLink, on_delete=models.CASCADE)
      
     def __str__(self):
         return self.title
@@ -46,6 +44,8 @@ class Episode(models.Model):
     audio_file = models.URLField()
     image = models.URLField(blank=True, null=True)
     explicit = models.BooleanField(blank=True, null=True)
+    xml_link = models.ForeignKey(XmlLink, on_delete=models.CASCADE)
+    
 
     
     def __str__(self):
