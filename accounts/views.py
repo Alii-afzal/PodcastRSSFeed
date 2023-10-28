@@ -16,6 +16,7 @@ from .utils import create_jti, create_access_token, create_refresh_token, cache_
 from accounts.serializers import UserRegisterSerializer, UserLoginSerializer
 
 from .authbackend import AuthenticationBackend
+from .publisher import Publish
 
 from config import settings
   
@@ -58,6 +59,8 @@ class LoginAPIView(APIView):
             "refresh": refresh_token 
         }
         
+        request_META = request.META.get('HTTP_USER_AGENT')
+        Publish().login(email=email, request_META=request_META)
         return Response(data=data, status=status.HTTP_201_CREATED)
 
 
