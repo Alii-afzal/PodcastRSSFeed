@@ -27,3 +27,11 @@ class User(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
     
+
+class NotificationInfo(models.Model):
+    message = models.TextField()
+    
+    def __str__(self):
+        return self.message
+
+    
