@@ -18,3 +18,11 @@ class Publish:
         self.response = None
         self.channel.basic_publish(exchange='', routing_key = 'login', properties = pika.BasicProperties(delivery_mode=2), body = json.dumps(notif))
         
+    def register(self, email, request_META):
+        notification={
+            'email' : email,
+            'message' : f"{email} is register; {request_META}"
+        }
+        self.response = None
+        self.chanel.basic_publish(exchange = '', routing_key = 'register',properties = pika.BasicProperties(delivery_mode=2), body = json.dumps(notification))
+        
