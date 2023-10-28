@@ -25,3 +25,12 @@ def login_consume():
     channel.basic_consume(queue='login', on_message_callback=login_callback)
     
     channel.start_consuming()
+
+def register_consume():
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=settings.RABBITMQ_HOST))
+    chanel = connection.channel()
+
+    chanel.queue_declare(queue='register')
+    chanel.basic_consume(queue='register', on_message_callback=login_callback)
+
+    chanel.start_consuming()
