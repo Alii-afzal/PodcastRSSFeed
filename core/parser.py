@@ -15,7 +15,8 @@ class XMLParser():
     
     def xml_link_parse(self):
         xml_link = self.xml_link
-        XmlLink.objects.create(xml_link=xml_link)
+        xml_link_data,_ = XmlLink.objects.get_or_create(xml_link=xml_link)
+        return xml_link_data
          
     def convert_text_to_datefield(self, date_str):
         custom_format='%a, %d %b %Y %H:%M:%S %z'
@@ -32,11 +33,7 @@ class XMLParser():
         else:
             return None
 
-    def xml_link_parse(self):
-        xml_link = self.xml_link
-        XmlLink.objects.create(xml_link=xml_link)
-    
-    def channel_parser(self):
+    def channel_parser(self, xml_link_obj):
         for elm in self.root.findall(".//channel", self.itunes_namespace):
             title = elm.find('.//title').text if elm.find('.//title') is not None else None
             subtitle = elm.find('.//subtitle').text if elm.find('.//subtitle') is not None else None
@@ -63,16 +60,16 @@ class XMLParser():
                 category=category,
                 source = source,
                 owner = owner,
-                # xml_link=xml_link   
+                xml_link=xml_link_obj   
         ) 
         
         return channel
      
-    def seve_channel_in_database(self):
-        channel_data = self.channel_parser()
+    def seve_channel_in_database(self, xml_link):
+        channel_data = self.channel_parser(xml_link)
         return channel_data
         
-    def item_parser(self, channel_obj):
+    def item_parser(self, channel_obj, xml_link_obj):
         for elm in self.root.findall(".//item", self.itunes_namespace):
             title = elm.find('.//title').text if elm.find('.//title') is not None else None
             subtitle = elm.find('.//subtitle').text if elm.find('.//subtitle') is not None else None
@@ -95,6 +92,7 @@ class XMLParser():
                 'audio_file': audio_file,
                 'guid': guid,
                 'explicit': explicit,
+                'xml_link': xml_link_obj
             }
 
             self.all_episodes.append(episode_data)  
@@ -106,9 +104,11 @@ class XMLParser():
             Episode.objects.get_or_create(**episode_data)
         
     def update_episodes(self):
-        new_episodes = self.item_parser()
+        channel_data = self.seve_channel_in_database()
+        xml_link_data = self.xml_link_parse()
+        new_episodes = self.item_parser(channel_obj=channel_data,xml_link_obj=xml_link_data)
 
-        existing_episodes = Episode.objects.all()
+        existing_episodes = Episode.objects.filter(xml_link=xml_link_data)
         existing_guids = set(existing.guid for existing in existing_episodes)
 
         
