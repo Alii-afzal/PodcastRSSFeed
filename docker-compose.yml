@@ -46,8 +46,8 @@ services:
     depends_on:
       # - postgres
       - rabbitmq
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     networks:
       - main
     restart: always
