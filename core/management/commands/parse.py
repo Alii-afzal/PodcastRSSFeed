@@ -2,26 +2,38 @@ from django.core.management.base import BaseCommand
 from core.parser import XMLParser
 import requests
 from core.tasks import update_podcast, update_all_podcasts
-
+from accounts.publisher import Publish
+from accounts.consumer import login_consume, register_consume
+import threading
 
 class Command(BaseCommand):
     help = "Parse and update podcast data"
 
     def handle(self, *args, **options):
         
-        xml_parser = XMLParser('https://rss.art19.com/apology-line')
-
-        # channel_data = xml_parser.seve_channel_in_database()
+        login_thread = threading.Thread(target=login_consume)
+        register_thread = threading.Thread(target=register_consume)
+        login_thread.start()
+        register_thread.start()
+        # xml_parser = XMLParser('https://rss.art19.com/apology-line')
         
-        # xml_parser.item_parser(channel_data)
+        # xml_link = xml_parser.xml_link_parse()
+        # # print(xml_link)
+
+        # channel_data = xml_parser.seve_channel_in_database(xml_link)
+        # # print(channel_data)
+        
+        # xml_parser.item_parser(channel_data, xml_link)
         
         # xml_parser.save_items_in_database()
+        # xml_parser.update_episodes()
         
 
         # xml_parser.xml_link_parse()
         
-        update_podcast.delay('https://rss.art19.com/apology-line')
-        update_all_podcasts.delay() 
+        # The two below links is for celery:
+        # update_podcast.delay('https://rss.art19.com/apology-line')
+        # update_all_podcasts.delay() 
                 
             
         # except Exception as e:
