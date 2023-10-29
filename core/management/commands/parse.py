@@ -3,7 +3,7 @@ from core.parser import XMLParser
 import requests
 from core.tasks import update_podcast, update_all_podcasts
 from accounts.publisher import Publish
-from accounts.consumer import login_consume, register_consume
+from accounts.consumer import login_consume, register_consume, update_podcast_consume
 import threading
 
 class Command(BaseCommand):
@@ -13,20 +13,24 @@ class Command(BaseCommand):
         
         login_thread = threading.Thread(target=login_consume)
         register_thread = threading.Thread(target=register_consume)
+        update_podcast_thread = threading.Thread(target=update_podcast_consume)
+        
         login_thread.start()
         register_thread.start()
-        # xml_parser = XMLParser('https://rss.art19.com/apology-line')
+        update_podcast_thread.start()
+        
+        xml_parser = XMLParser('https://rss.art19.com/apology-line')
         
         # xml_link = xml_parser.xml_link_parse()
-        # # print(xml_link)
+        # # # print(xml_link)
 
         # channel_data = xml_parser.seve_channel_in_database(xml_link)
-        # # print(channel_data)
+        # # # print(channel_data)
         
         # xml_parser.item_parser(channel_data, xml_link)
         
         # xml_parser.save_items_in_database()
-        # xml_parser.update_episodes()
+        xml_parser.update_episodes()
         
 
         # xml_parser.xml_link_parse()
