@@ -43,6 +43,20 @@ def register_consume():
 
     chanel.start_consuming()
 
+
+def update_podcast_callback(chanel, method, properties, body):
+    data = json.loads(body)
+    
+    channel_id = data['podcast']
+    
+    subscribers = Subscribe.objects.filter(channel=Channel.objects.get(id=channel_id))
+    if subscribers.exists():
+        for subscriber in subscribers:
+            notification = NotificationInfo.objects.create(message = data['message'])
+            user = User.objects.get(id=subscriber.user.id)
+            Notification.objects.create(user = user, message = notification)
+
+
 def update_podcast_consume():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=settings.RABBITMQ_HOST))
     chanel = connection.channel()
