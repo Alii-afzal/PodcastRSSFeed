@@ -39,6 +39,7 @@ class Publish:
         notification={
             'podcast' : podcast.id,
             'message' : f"{podcast.title} has new episodes",
+            # 'email' : email,
             'routing_key': 'update_podcast'
         }
         self.response = None
