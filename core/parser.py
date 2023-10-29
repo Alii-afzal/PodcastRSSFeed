@@ -118,7 +118,9 @@ class XMLParser():
                 print(episode['guid'])
                 Episode.objects.create(**episode)   
                 existing_guids.add(episode['guid'])
+                Publish().update_podcast(channel_data)
+                print("Ramin")
                 
-        print("Ramin")
-        Publish().update_podcast(channel_data)
+        
+        
         
