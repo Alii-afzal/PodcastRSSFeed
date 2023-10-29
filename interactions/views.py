@@ -10,6 +10,8 @@ from .serializers import LikeSerializer, CommentSerializer, SubscribeSerializer,
 from core.models import Channel, Episode
 from accounts.authentication import JWTAuthentication
 
+from django.utils.translation import gettext_lazy as _
+
 
 class LikeAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -52,30 +54,29 @@ class CommentAPIView(APIView):
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    # def post(self, request):
-    #     episode = Episode.objects.get(id=request.data.get('episode_id'))
-        
-    #     serializer = self.serializer_class(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-        
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
 class SubscribeAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = (JWTAuthentication,)
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = SubscribeSerializer
+    query_set = Subscribe.objects.all()
     
     def post(self, request):
+        channel_id = request.data.get('channel')
+        user = request.user
+
+        existing_subscription = Subscribe.objects.filter(user=user, channel=channel_id).first()
+
+        if existing_subscription:
+            return Response({'message': _("Subscription already exists.")}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            
-            # self.x.append(serializer.validated_data.get('user'))
-            
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
+
+
 class BookMarkAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (JWTAuthentication,)
@@ -104,3 +105,22 @@ class BookMarkAPIView(APIView):
         except BookMark.DoesNotExist:
             msg = {'status':'This episode was not bookmarked'}
             return Response(msg, status=status.HTTP_404_NOT_FOUND)
+        
+# class RecommendationView(APIView):
+#     authentication_classes = [JWTAuthentication]
+#     permission_classes = [IsAuthenticated]
+    
+#     def get(self, request):
+#         user = request.user
+#         max_count = Recommendation.objects.filter(user=user).aggregate(max_count=Max("count"))["max_count"]
+#         flatlist = set()
+        
+#         if max_count != 0:
+#             recommendation_query = Recommendation.objects.filter(user=user, count=max_count)
+#             unique_category_ids = recommendation_query.values_list('category', flat=True).distinct()
+#             channels = Channel.objects.filter(xml_link__categories__in=unique_category_ids)
+#             flatList.update(channels)
+
+#         ser_data = ChannelSerializer(flatList, many=True, context={"request": request})
+
+#         return Response(ser_data.data, status=status.HTTP_200_OK)
