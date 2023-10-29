@@ -8,8 +8,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
 from accounts.models import User, NotificationInfo, Notification
-from interactions.models import BookMark
+from interactions.models import BookMark, Subscribe
 from config import settings
+
+from core.models import Channel
 
 def login_callback(ch, method, properties, body):
     data = json.loads(body)
@@ -40,3 +42,13 @@ def register_consume():
     chanel.basic_consume(queue='register', on_message_callback=login_callback)
 
     chanel.start_consuming()
+
+def update_podcast_consume():
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=settings.RABBITMQ_HOST))
+    chanel = connection.channel()
+
+    chanel.queue_declare(queue='update_podcast')
+    chanel.basic_consume(queue='update_podcast', on_message_callback=update_podcast_callback)
+
+    chanel.start_consuming()
+    
