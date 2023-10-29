@@ -2,6 +2,7 @@ from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
 from .models import Channel, Episode, Category, XmlLink
+from accounts.publisher import Publish
 
 class XMLParser():
     def __init__(self, xml_link):
@@ -104,8 +105,8 @@ class XMLParser():
             Episode.objects.get_or_create(**episode_data)
         
     def update_episodes(self):
-        channel_data = self.seve_channel_in_database()
         xml_link_data = self.xml_link_parse()
+        channel_data = self.seve_channel_in_database(xml_link=xml_link_data)
         new_episodes = self.item_parser(channel_obj=channel_data,xml_link_obj=xml_link_data)
 
         existing_episodes = Episode.objects.filter(xml_link=xml_link_data)
@@ -117,3 +118,7 @@ class XMLParser():
                 print(episode['guid'])
                 Episode.objects.create(**episode)   
                 existing_guids.add(episode['guid'])
+                
+        print("Ramin")
+        Publish().update_podcast(channel_data)
+        
