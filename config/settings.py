@@ -207,39 +207,88 @@ CELERY_BEAT_SCHEDULE = {
 RABBITMQ_HOST = env("RABBITMQ_HOST")
 RABBITMQ_PORT = env("RABBITMQ_PORT")
 
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'elasticsearch:9200',
+        # 'http_auth': ('username', 'password')
+    }
+}
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'simple': {
-#             'format': '[%(asctime)s] %(levelname)s|%(name)s|%(message)s',
-#             'datefmt': '%Y-%m-%d %H:%M:%S',
-#         },
-#     },
-#     'handlers': {
-#         'applogfile': {
-#             'level': 'DEBUG',
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': '/webapps/myproject/logs/django/myproject.log',
-#             'maxBytes': 1024*1024*15,  # 15MB
-#             'backupCount': 10,
-#             'formatter': 'simple',
-#         },
-#         'console': {
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'simple'
-#         }
-#     },
-#     'loggers': {
-#         'app1': {
-#             'handlers': ['applogfile', 'console'],
-#             'level': 'DEBUG',
-#         },
-#         'app2': {
-#             'handlers': ['applogfile', 'console'],
-#             'level': 'DEBUG',
-#         }
-#     }
-# }
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            # "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            # "formatter": "simple",
+        },
+        "user_authenticate_file_handler":{
+            "level":"DEBUG",
+            "class":"logging.FileHandler",
+            "filename":"user_authenticate_logs.log",
+            "formatter":"main_formatter",
+        },
+        "celery_file_handler":{
+            "level":"DEBUG",
+            "class":"logging.FileHandler",
+            "filename":"celery_tasks_logs.log",
+            "formatter":"main_formatter",
+        },
+        "API_file_handler":{
+            "level":"DEBUG",
+            "class":"logging.FileHandler",
+            "filename":"API_endpoints_logs.log",
+            "formatter":"main_formatter",
+        },
+        
+        # "elasticsearch_handler": {
+        #     "level": "INFO",
+        #     "class": "django.utils.log.ElasticsearchHandler",
+        #     "filters": ["special"],
+        # },
+    },
+    
+    "formatters": {
+        "main_formatter": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    
+    "loggers": {
+        # "django": {
+        #     "handlers": ["console"],
+        #     "propagate": True,
+        # },
+        "user_authenticate_logger": {
+            "handlers": ["user_authenticate_file_handler",],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "celery_tasks_logger": {
+            "handlers": ["celery_file_handler"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "API_endpoints_logger": {
+            "handlers": ["API_file_handler",],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+    
+    
+    # "filters": {
+    #     "special": {
+    #         "()": "project.logging.SpecialFilter",
+    #         "foo": "bar",
+    #     },
+    #     "require_debug_true": {
+    #         "()": "django.utils.log.RequireDebugTrue",
+    #     },
+    # },
+}
