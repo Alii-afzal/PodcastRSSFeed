@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'interactions.apps.InteractionsConfig',
     'django_celery_beat',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
 ]
 
 MIDDLEWARE = [
