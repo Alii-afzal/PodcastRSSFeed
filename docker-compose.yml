@@ -39,6 +39,18 @@ services:
       - main
     restart: always
   
+  celerybeat:
+    container_name: celerybeat
+    build: .
+    volumes:
+      - .:/code/
+    command: celery -A config beat -l info  #-B read
+    depends_on:
+      - celery_worker
+    networks:
+      - main
+    restart: always
+
   app:
     build: .
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
@@ -64,6 +76,7 @@ services:
       - '6379:6379'
     volumes: 
       - redis_data:/data
+
   
 
 networks:
