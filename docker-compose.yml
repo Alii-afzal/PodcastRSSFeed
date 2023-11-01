@@ -93,6 +93,19 @@ services:
       - main
     restart: always
 
+  kibana:
+    image: kibana:7.17.3
+    container_name: kibana
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - main
+    restart: always
+    volumes:
+      - kibana_data:/usr/share/kibana/data
+  
 
 networks:
   main:
@@ -101,3 +114,4 @@ volumes:
   postgres_data:
   redis_data:
   elasticsearch_data:
+  kibana_data:
