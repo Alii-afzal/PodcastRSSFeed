@@ -77,7 +77,22 @@ services:
     volumes: 
       - redis_data:/data
 
-  
+  elasticsearch:
+    image: elasticsearch:7.17.3
+    container_name: elasticsearch
+    mem_limit: 1g
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      xpack.security.enabled: 'false'
+    ports:
+      - 9200:9200
+    networks:
+      - main
+    restart: always
+
 
 networks:
   main:
@@ -85,3 +100,4 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  elasticsearch_data:
