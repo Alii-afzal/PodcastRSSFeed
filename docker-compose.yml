@@ -111,7 +111,7 @@ networks:
   main:
 
 volumes:
-  postgres_data:
+  # postgres_data:
   redis_data:
   elasticsearch_data:
   kibana_data:
