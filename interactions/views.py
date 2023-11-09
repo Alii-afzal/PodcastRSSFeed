@@ -39,6 +39,23 @@ class LikeAPIView(APIView):
         except Like.DoesNotExist:
             msg = {'status': _('This episode is not liked!')}
             return Response(msg, status=status.HTTP_404_NOT_FOUND)
+        
+class CommentAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+    serializer_class = CommentSerializer
+    
+    def post(self, request):
+        episode = Episode.objects.get(id=request.data.get('episode_id'))
+        comment = Comment.objects.create(user=request.user, episode=episode, content=request.data['content'])
+        
+        if comment:
+            serializer = self.serializer_class(comment)
+            message = {'status':f'Comment {comment.id} added successfuly'}
+            return Response(message, status=status.HTTP_201_CREATED)
+        else:
+            message = {'status':'Unable to add comment'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
            
 class SubscribeAPIView(APIView):
     authentication_classes = [JWTAuthentication]
