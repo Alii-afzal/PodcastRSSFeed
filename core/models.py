@@ -10,7 +10,6 @@ class Category(models.Model):
 
 class XmlLink(models.Model):
     xml_link = models.URLField(unique=True)
-    # rss_type = models.ForeignKey(Type, on_delete=models.PROTECT) 
 
     def __str__(self):
         return self.xml_link
