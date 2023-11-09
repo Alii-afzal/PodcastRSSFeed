@@ -10,7 +10,7 @@ from .serializers import LikeSerializer, CommentSerializer, SubscribeSerializer,
 from core.models import Channel, Episode
 from accounts.authentication import JWTAuthentication
 
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 
 
 class LikeAPIView(APIView):
@@ -24,9 +24,10 @@ class LikeAPIView(APIView):
         like, created = Like.objects.get_or_create(user=user, episode=episode)
         if created:
             serializer = self.serializer_class(like)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            messaage = {"status":("This episode liked succussfully")}
+            return Response(messaage, status=status.HTTP_201_CREATED)
         else:
-            msg = {'status':_('This episode is already liked!')}
+            msg = {'status':('This episode is already liked!')}
             return Response(msg, status=status.HTTP_200_OK)
     
     def delete(self, request):
@@ -34,10 +35,10 @@ class LikeAPIView(APIView):
         try:
             like = Like.objects.get(user=request.user, episode=episode)
             like.delete()
-            msg = {'status': _('Unliked!')}
+            msg = {'status': ('Unliked!')}
             return Response(msg, status=status.HTTP_204_NO_CONTENT)
         except Like.DoesNotExist:
-            msg = {'status': _('This episode is not liked!')}
+            msg = {'status': ('This episode is not liked!')}
             return Response(msg, status=status.HTTP_404_NOT_FOUND)
         
 class CommentAPIView(APIView):
@@ -54,7 +55,7 @@ class CommentAPIView(APIView):
             message = {'status':f'Comment {comment.id} added successfuly'}
             return Response(message, status=status.HTTP_201_CREATED)
         else:
-            message = {'status':'Unable to add comment'}
+            message = {'status': ('Unable to add comment')}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentDeleteAPIView(APIView):
@@ -65,11 +66,11 @@ class CommentDeleteAPIView(APIView):
         try:
             comment = Comment.objects.get(id=comment_id, user=request.user.id)
         except Comment.DoesNotExist:
-            message = {'status': 'Comment not found or you are not authorized to delete it.'}
+            message = {'status': ('Comment not found or you are not authorized to delete it.')}
             return Response(message, status=status.HTTP_404_NOT_FOUND)
 
         comment.delete()
-        message = {'status': 'Comment deleted successfully'}
+        message = {'status': ('Comment deleted successfully')}
         return Response(message, status=status.HTTP_204_NO_CONTENT)
            
 class SubscribeAPIView(APIView):
@@ -85,7 +86,7 @@ class SubscribeAPIView(APIView):
         existing_subscription = Subscribe.objects.filter(user=user, channel=channel_id).first()
 
         if existing_subscription:
-            return Response({'message': _("Subscription already exists.")}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': ("Subscription already exists.")}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -97,15 +98,15 @@ class SubscribeAPIView(APIView):
     def delete(self, request):
         channel_id = request.data.get('channel_id')
         if channel_id is None:
-            return Response({'message': _("Missing channel_id in request body.")}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': ("Missing channel_id in request body.")}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             subscribe = Subscribe.objects.get(user=request.user, channel_id=channel_id)
         except Subscribe.DoesNotExist:
-            return Response({'message': _("Subscribe does not exist.")}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': ("Subscribe does not exist.")}, status=status.HTTP_404_NOT_FOUND)
 
         subscribe.delete()
-        return Response({'message': _("Your object has been deleted.")}, status=status.HTTP_200_OK)
+        return Response({'message': ("Your object has been deleted.")}, status=status.HTTP_200_OK)
 
 class BookMarkAPIView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -118,10 +119,10 @@ class BookMarkAPIView(APIView):
         
         if created:
             serialzer = self.serializer_class(bookmark_episode)
-            msg= {'status': _('Episode Bookmarked.')}
+            msg= {'status': ('Episode Bookmarked.')}
             return Response(msg, status=status.HTTP_201_CREATED)
         else:
-            msg = {'status': _('This episode is already bookmarked')}
+            msg = {'status': ('This episode is already bookmarked')}
             return Response(msg, status=status.HTTP_200_OK)
         
     def delete(self, request):
@@ -130,8 +131,8 @@ class BookMarkAPIView(APIView):
             bookmarked_episode = BookMark.objects.get(user=request.user, episode=episode)
             bookmarked_episode.delete()
 
-            msg = {'status': _('No longer bookmarked')}
+            msg = {'status': ('No longer bookmarked')}
             return Response(msg, status=status.HTTP_204_NO_CONTENT)
         except BookMark.DoesNotExist:
-            msg = {'status': _('This episode was not bookmarked')}
+            msg = {'status': ('This episode was not bookmarked')}
             return Response(msg, status=status.HTTP_404_NOT_FOUND)
