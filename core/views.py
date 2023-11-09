@@ -64,3 +64,16 @@ class AddPodcastAPIView(APIView):
         parser.seve_channel_in_database(data)
         return Response({"message":("Rss file save in database successfully.")}, status.HTTP_201_CREATED)
     
+class UpdatePodcastTaskAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        # data = None
+        # print(data)
+        # if data:
+            update_all_podcasts.delay()
+            return Response({"message":("All urls are going to update")}, status.HTTP_201_CREATED)
+            # raise Response(_('xml is invalid!'), status=status.HTTP_400_BAD_REQUEST)
+        # update_podcast.delay(data)
+        # return Response({"message":_("xml is going to update")}, status.HTTP_201_CREATED)
