@@ -50,3 +50,17 @@ class AddPodcastUrlView(APIView):
         serializer.save()
         return Response( ("URL is saved"), status=status.HTTP_201_CREATED)
     
+class AddPodcastAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes=[IsAdminUser]
+
+    def post(self, request):
+        parser = XMLParser(request.data.get('xml_link'))
+        data = parser.xml_link_parse()
+        print(data)
+        if not data:
+            raise Response(_('URL is invalid!'), status=status.HTTP_400_BAD_REQUEST)
+        
+        parser.seve_channel_in_database(data)
+        return Response({"message":("Rss file save in database successfully.")}, status.HTTP_201_CREATED)
+    
