@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 from .models import Channel, Episode, Category, XmlLink
 from accounts.publisher import Publish
 
+
 class XMLParser():
     def __init__(self, xml_link):
         self.xml_link = xml_link
@@ -115,12 +116,6 @@ class XMLParser():
         
         for episode in new_episodes:
             if episode['guid'] not in existing_guids:
-                print(episode['guid'])
                 Episode.objects.create(**episode)   
                 existing_guids.add(episode['guid'])
                 Publish().update_podcast(channel_data)
-                print("Ramin")
-                
-        
-        
-        
