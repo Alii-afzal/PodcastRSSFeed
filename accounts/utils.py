@@ -40,24 +40,6 @@ def encode_jwt(payload):
     token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
     return token
     
-def cache_key_setter(user_id, jti):
-    return f"user_{user_id} || {jti}"
-
-def cache_value_setter(request):
-    return request.META.get('HTTP_USER_AGENT', 'UNKNOWN')
-
-def cache_key_parser(arg):
-    return arg.split(" || ")
-
-
-def send_email(data):
-    email = EmailMessage(
-        subject=data['email_subject'],
-        body = data["email_body"],
-        to = [data["to_email"]]
-    )
-    email.send()
-    
 def cache_refresh_token(refresh_token):
     user_id = refresh_token.get('user_id')
     jti = refresh_token.get('jti')
@@ -66,6 +48,8 @@ def cache_refresh_token(refresh_token):
     timeout = exp_date - iat
 
     cache.set(key=jti, value=user_id, timeout=timeout)
+    print('ramin')
+    print(timeout)
     
 def check_cache(jti):
     cache_existence = cache.get(jti)
@@ -81,7 +65,3 @@ def validate_cached_token(refresh_token):
     jti = refresh_token.get('jti')
     cached_token = check_cache(jti)
     return cached_token
-
-
-def check_exp_date(exp_date):
-    return datetime.now() < exp_date
