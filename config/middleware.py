@@ -31,3 +31,15 @@ def log_format(request, response, exception=None):
         'event': event,
     }
 
+def authentication_logs_format(user, body, exception=None):
+    message = str(exception) if exception else 'Consume is seccssfully'
+    
+    return {
+        'user_id': str(user.id ),
+        'user_phone': str(user.phone),
+        'user_agent': body["user_agent"],
+        'event': f"consumer.{body['routing_key']}",
+        "status": "success",
+        'message': message
+    }
+    
