@@ -6,5 +6,6 @@ urlpatterns = [
     path('extractchannel/', ExtractXMLChannel.as_view()),
     path('extractepisode/', ExtractXMLItems.as_view()),
     path('addpodcastadmin/', AddPodcastUrlView.as_view()),
+    path('update_episode/', UpdateEpisodesView.as_view()),
 ]
  
