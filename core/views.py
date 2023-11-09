@@ -38,3 +38,15 @@ class UpdateEpisodesView(APIView):
         xml_parser = XMLParser(request.data.get('xml_link'))
         xml_parser.update_episodes()  
         return Response({"message": ("Episodes updated successfully")}, status=status.HTTP_200_OK)
+
+
+class AddPodcastUrlView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes=[IsAdminUser]
+
+    def post(self,request):
+        serializer = XmlLinkSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response( ("URL is saved"), status=status.HTTP_201_CREATED)
+    
