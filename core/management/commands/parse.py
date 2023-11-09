@@ -6,6 +6,7 @@ from accounts.publisher import Publish
 from accounts.consumer import login_consume, register_consume, update_podcast_consume
 import threading
 
+
 class Command(BaseCommand):
     help = "Parse and update podcast data"
 
@@ -19,7 +20,7 @@ class Command(BaseCommand):
         register_thread.start()
         update_podcast_thread.start()
         
-        xml_parser = XMLParser('https://rss.art19.com/apology-line')
+        # xml_parser = XMLParser('https://rss.art19.com/apology-line')
         
         # xml_link = xml_parser.xml_link_parse()
         # # # print(xml_link)
@@ -30,7 +31,8 @@ class Command(BaseCommand):
         # xml_parser.item_parser(channel_data, xml_link)
         
         # xml_parser.save_items_in_database()
-        xml_parser.update_episodes()
+        
+        # xml_parser.update_episodes()
         
 
         # xml_parser.xml_link_parse()
@@ -38,7 +40,7 @@ class Command(BaseCommand):
         # The two below links is for celery:
         # update_podcast.delay('https://rss.art19.com/apology-line')
         # update_all_podcasts.delay() 
-                
+        # update_all_podcasts.delay()
             
         # except Exception as e:
         #     self.stdout.write(
