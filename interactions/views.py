@@ -26,7 +26,7 @@ class LikeAPIView(APIView):
             serializer = self.serializer_class(like)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            msg = {'status':'This episode is already liked!'}
+            msg = {'status':_('This episode is already liked!')}
             return Response(msg, status=status.HTTP_200_OK)
     
     def delete(self, request):
@@ -34,26 +34,12 @@ class LikeAPIView(APIView):
         try:
             like = Like.objects.get(user=request.user, episode=episode)
             like.delete()
-            msg = {'status':'Unliked!'}
+            msg = {'status': _('Unliked!')}
             return Response(msg, status=status.HTTP_204_NO_CONTENT)
         except Like.DoesNotExist:
-            msg = {'status':'This episode is not liked!'}
+            msg = {'status': _('This episode is not liked!')}
             return Response(msg, status=status.HTTP_404_NOT_FOUND)
-        
-class CommentAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = (JWTAuthentication,)
-    serializer_class = CommentSerializer
-    
-    def post(self, request):
-        episode = Episode.objects.get(id=request.data.get('episode_id'))
-        
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user, episode=episode)
-        
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+           
 class SubscribeAPIView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -72,8 +58,9 @@ class SubscribeAPIView(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        message = {'status':f"{request.user} subscribed {request.data.get('channel')} (channel_id) successfully"}
+        return Response(message, status=status.HTTP_201_CREATED)
     
     def delete(self, request):
         channel_id = request.data.get('channel_id')
@@ -99,10 +86,10 @@ class BookMarkAPIView(APIView):
         
         if created:
             serialzer = self.serializer_class(bookmark_episode)
-            msg= {'status':'Episode Bookmarked.'}
+            msg= {'status': _('Episode Bookmarked.')}
             return Response(msg, status=status.HTTP_201_CREATED)
         else:
-            msg = {'status':'This episode is already bookmarked'}
+            msg = {'status': _('This episode is already bookmarked')}
             return Response(msg, status=status.HTTP_200_OK)
         
     def delete(self, request):
@@ -111,27 +98,8 @@ class BookMarkAPIView(APIView):
             bookmarked_episode = BookMark.objects.get(user=request.user, episode=episode)
             bookmarked_episode.delete()
 
-            msg = {'status':'No longer bookmarked'}
+            msg = {'status': _('No longer bookmarked')}
             return Response(msg, status=status.HTTP_204_NO_CONTENT)
         except BookMark.DoesNotExist:
-            msg = {'status':'This episode was not bookmarked'}
+            msg = {'status': _('This episode was not bookmarked')}
             return Response(msg, status=status.HTTP_404_NOT_FOUND)
-        
-# class RecommendationView(APIView):
-#     authentication_classes = [JWTAuthentication]
-#     permission_classes = [IsAuthenticated]
-    
-#     def get(self, request):
-#         user = request.user
-#         max_count = Recommendation.objects.filter(user=user).aggregate(max_count=Max("count"))["max_count"]
-#         flatlist = set()
-        
-#         if max_count != 0:
-#             recommendation_query = Recommendation.objects.filter(user=user, count=max_count)
-#             unique_category_ids = recommendation_query.values_list('category', flat=True).distinct()
-#             channels = Channel.objects.filter(xml_link__categories__in=unique_category_ids)
-#             flatList.update(channels)
-
-#         ser_data = ChannelSerializer(flatList, many=True, context={"request": request})
-
-#         return Response(ser_data.data, status=status.HTTP_200_OK)
