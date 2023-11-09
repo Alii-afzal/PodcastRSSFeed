@@ -33,3 +33,15 @@ class BookMark(models.Model):
     
     def __str__(self):
         return f"{self.episode} Bookmarked by {self.user}"
+    
+# class Recommendation(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+#                              related_name='category_recommendations')
+#     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+#     count = models.PositiveIntegerField(default=0)
+
+#     def __str__(self):
+#         return f'{self.user.username} interest in: {self.category.name}'
+
+    # class Meta:
+    #     ordering = ['-count']
