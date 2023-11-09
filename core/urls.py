@@ -8,5 +8,6 @@ urlpatterns = [
     path('addpodcastadmin/', AddPodcastUrlView.as_view()),
     path('update_episode/', UpdateEpisodesView.as_view()),
     path('update_task_episode/', UpdatePodcastTaskAPIView.as_view()),
+    path('save_channel/', AddPodcastAPIView.as_view()),
 ]
  
