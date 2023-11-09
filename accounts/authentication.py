@@ -9,7 +9,10 @@ from .models import User
 
 class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
-        # Extract the JWT from the Authorization header
+        """
+            Extract the JWT from the Authorization header
+        """
+
         authoriztion_header = request.META.get('HTTP_AUTHORIZATION')
         try:
             token = self.get_the_token_from_header(authoriztion_header)
