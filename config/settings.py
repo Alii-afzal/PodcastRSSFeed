@@ -238,17 +238,19 @@ LOGGING = {
 }
 
 
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 
-LANGUAGE_CODE='en'
+# LANGUAGE_CODE='en'
 
-LANGUAGES = (
-    ('en', _('English')),
-    ('fa', _('Persian')),
-)
+# LANGUAGES = (
+#     ('en', _('English')),
+#     ('fa', _('Persian')),
+# )
 
-LOCALE_PATH = (
-    os.path.join(BASE_DIR, 'locale/'),
-)
+# LOCALE_PATH = (
+#     os.path.join(BASE_DIR, 'locale/'),
+# )
+
+
 
 AUTH_USER_MODEL = 'accounts.User'
