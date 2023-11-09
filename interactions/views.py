@@ -56,6 +56,21 @@ class CommentAPIView(APIView):
         else:
             message = {'status':'Unable to add comment'}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+class CommentDeleteAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+
+    def delete(self, request, comment_id):
+        try:
+            comment = Comment.objects.get(id=comment_id, user=request.user.id)
+        except Comment.DoesNotExist:
+            message = {'status': 'Comment not found or you are not authorized to delete it.'}
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+
+        comment.delete()
+        message = {'status': 'Comment deleted successfully'}
+        return Response(message, status=status.HTTP_204_NO_CONTENT)
            
 class SubscribeAPIView(APIView):
     authentication_classes = [JWTAuthentication]
