@@ -1,9 +1,6 @@
 from rest_framework import serializers
 from .models import User
 
-# def clean_email(value):
-#     if 'admin' in value:
-#         raise serializers.ValidationError('admin can`t be in email')
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
