@@ -43,3 +43,13 @@ def authentication_logs_format(user, body, exception=None):
         'message': message
     }
     
+def rss_log_format(body, exception=None):
+
+    message = str(exception) if exception else 'Consume is successfully'
+
+    return {
+        'event': f"consumer.{body['routing_key']}",
+        "status": "success",
+        'message': message
+    }
+    
