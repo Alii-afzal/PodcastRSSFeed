@@ -30,3 +30,11 @@ class ExtractXMLItems(APIView):
         ser_data = EpisodeSerializer(instance=parsed_data, many=True)
         return Response(data=ser_data.data)
     
+class UpdateEpisodesView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes=[IsAdminUser]
+    
+    def get(self, request):
+        xml_parser = XMLParser(request.data.get('xml_link'))
+        xml_parser.update_episodes()  
+        return Response({"message": ("Episodes updated successfully")}, status=status.HTTP_200_OK)
