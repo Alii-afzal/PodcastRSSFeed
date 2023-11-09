@@ -24,6 +24,9 @@ class RetryTask(Task):
 
         super().retry(args, kwargs, exc, throw, eta, countdown, max_retries, **options)
 
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        log_task_info(self.name, 'error', f'Task {self.name} failed: {str(exc)}',task_id, args, kwargs, exception=exc)
+
 
 
 @shared_task(bind=True, base=RetryTask)
