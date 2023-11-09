@@ -5,5 +5,6 @@ from .views import ExtractXMLChannel, ExtractXMLItems, AddPodcastUrlView, Update
 urlpatterns = [
     path('extractchannel/', ExtractXMLChannel.as_view()),
     path('extractepisode/', ExtractXMLItems.as_view()),
+    path('addpodcastadmin/', AddPodcastUrlView.as_view()),
 ]
  
