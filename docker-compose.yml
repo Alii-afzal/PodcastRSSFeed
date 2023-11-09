@@ -8,6 +8,19 @@ services:
       - "5672:5672"
     restart: always
 
+  rabbitmq_queue:
+    container_name: rabbitmq_queue
+    build: .
+    command: python manage.py parse
+    volumes:
+      - .:/code/
+    networks:
+      - main
+    depends_on:
+      - rabbitmq
+      - app
+    restart: always
+
   # postgres:
   #   container_name: postgres
   #   image: postgres:latest
@@ -65,7 +78,7 @@ services:
     networks:
       - main
     restart: always
-
+ 
   redis:
     container_name: redis
     image: redis:latest
