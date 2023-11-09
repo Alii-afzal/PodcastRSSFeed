@@ -53,7 +53,7 @@ services:
 
   app:
     build: .
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    # command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     container_name: app
     volumes:
       - .:/code/
@@ -78,15 +78,18 @@ services:
       - redis_data:/data
 
   elasticsearch:
-    image: elasticsearch:7.17.3
+    image: elasticsearch:8.10.1
     container_name: elasticsearch
-    mem_limit: 1g
+    # mem_limit: 1g
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     environment:
       discovery.type: single-node
       ES_JAVA_OPTS: -Xms512m -Xmx512m
       xpack.security.enabled: 'false'
+      network.bind_host: 0.0.0.0
+      network.host: 0.0.0.0
+      action.destructive_requires_name: 'false'
     ports:
       - 9200:9200
     networks:
@@ -94,7 +97,7 @@ services:
     restart: always
 
   kibana:
-    image: kibana:7.17.3
+    image: kibana:8.10.1
     container_name: kibana
     ports:
       - 5601:5601
@@ -102,11 +105,28 @@ services:
       - elasticsearch
     networks:
       - main
+    # environment:
+    #   - ELASTICSEARCH_HOSTS=http://elastic:9200
     restart: always
     volumes:
       - kibana_data:/usr/share/kibana/data
   
-
+  flower:
+    container_name: flower
+    build: .
+    command: celery -A config flower
+    networks:
+      - main
+    ports:
+      - 5555:5555
+    depends_on:
+      - rabbitmq
+      - celery_worker
+      - celerybeat
+    volumes:
+      - flower_data:/flower_data
+    restart: always
+    
 networks:
   main:
 
@@ -115,3 +135,4 @@ volumes:
   redis_data:
   elasticsearch_data:
   kibana_data:
+  flower_data:
