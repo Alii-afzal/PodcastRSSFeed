@@ -12,7 +12,7 @@ from rest_framework import permissions
 
 from .authentication import JWTAuthentication
 from accounts.models import User
-from .utils import create_jti, create_access_token, create_refresh_token, cache_key_setter, cache_value_setter, decode_jwt, delete_cache, cache_refresh_token, validate_cached_token
+from .utils import create_jti, create_access_token, create_refresh_token, decode_jwt, delete_cache, cache_refresh_token, validate_cached_token
 from accounts.serializers import UserRegisterSerializer, UserLoginSerializer
 
 from .authbackend import AuthenticationBackend
@@ -41,21 +41,12 @@ class LoginAPIView(APIView):
         password = serializer.validated_data.get('password')
         auth = AuthenticationBackend()
         user = auth.authenticate(request, email=email, password=password)
-        # print(user)
-        # print(request.data)
-        # print(email)
-        # print(password)
-        # print(serializer.errors)
         if user is None:
             return Response(data={'message': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
         jti = create_jti()
         access_token = create_access_token(user.id, jti)
         refresh_token = create_refresh_token(user.id, jti)
         
-        # key = cache_key_setter(user.id, jti)
-        # value = cache_value_setter(request)
-        # refresh_expired_time = settings.REFRESH_EXPIRED_TIME
-        # cache.set(key=key, value=value, timeout=refresh_expired_time)
         cache_refresh_token(decode_jwt(refresh_token))
         
         data = {
@@ -83,11 +74,9 @@ class RefreshAPIView(APIView):
         access_token = create_access_token(user_id, jti)
         refresh_token = create_refresh_token(user_id, jti)
         
-        # key = cache_key_setter(user_id, jti)
-        # value = cache_value_setter(request)
+
  
         delete_cache(jti)
-        # cache.set(key=key, value=value, timeout=refresh_expired_time)
         cache_refresh_token(decode_jwt(refresh_token))
         
         data = {
@@ -100,30 +89,11 @@ class RefreshAPIView(APIView):
 
 class LogoutAPIView(APIView):
     def post(self, request):
-        access_token = request.data.get('access_token')
-        if not access_token:
+        refresh_token = request.data.get('refresh_token')
+        if not refresh_token:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        jti = decode_jwt(access_token).get('jti')
+        jti = decode_jwt(refresh_token).get('jti')
         delete_cache(jti)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# class LogoutAPIView(APIView):
-#     def post(self, request):
-#         try:
-#             payload = request.auth
-#             user = request.user
-#             jti = payload["jti"]
-#             caches['auth'].delete(f"user_{user.id} || {jti}")
-            
-#             return Response(data={"message":True}, status=status.HTTP_200_OK)
-#         except Exception as e:
-#             return Response(data={"message":str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-class AuthenticatedView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    authentication_classes = (JWTAuthentication, )
-
-    def get(self, request):
-        return Response(data={"message": "you are authenticated"}, status=status.HTTP_200_OK)
+        message = {'status' : 'Logout done successfully.'}
+        return Response(message , status=status.HTTP_204_NO_CONTENT)
