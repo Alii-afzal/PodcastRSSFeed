@@ -1,10 +1,11 @@
 from .models import User
 
+from django.contrib.auth.backends import ModelBackend
 
-class AuthenticationBackend:
-    def authenticate(self, request, email=None, password=None):
+class AuthenticationBackend(ModelBackend):
+    def authenticate(self, request, email, password):
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.filter(email=email).first()
             if user.check_password(password):
                 return user
             return None
