@@ -15,6 +15,7 @@ Logging and Elastic Search:
 ## Built With
 + Python
 * [![Django][django.js]][django-url]
+* [![Django](django.js)](django-url)
 * [![React][React.js]][React-url]
 + Django
 + Django REST framework
