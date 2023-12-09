@@ -7,3 +7,10 @@ In costume parser, we are doing the below tasks:
 + Python
 + Django
 + Django REST framework
++ RabbitMq
++ Docker
++ Celery
++ Django-CELERY-BEAT
+
+## Getting Started
+### Prerequisites
