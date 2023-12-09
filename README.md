@@ -3,3 +3,6 @@ We have a Django backend project for aggregating and managing RSS feeds. In this
 In costume parser, we are doing the below tasks:
 + Explore feed metadata, custom tags, and namespaces.
 + Implement advanced parsing techniques, including XML namespaces, and extract rich content.
+## Built With
++ Django
++ 
