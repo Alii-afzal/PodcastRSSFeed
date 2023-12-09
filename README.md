@@ -15,6 +15,7 @@ Logging and Elastic Search:
 ## Built With
 + Python
 * [![Next][Next.js]][Next-url]
+* [![React][React.js]][React-url]
 + Django
 + Django REST framework
 + RabbitMq
