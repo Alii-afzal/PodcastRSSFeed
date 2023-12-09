@@ -14,7 +14,7 @@ Logging and Elastic Search:
 + We use Elastic Search for showing and managing Loggings.
 ## Built With
 + Python
-* [![Next][Next.js]][Next-url]
+* [![Django][django.js]][django-url]
 * [![React][React.js]][React-url]
 + Django
 + Django REST framework
