@@ -24,3 +24,45 @@ Logging and Elastic Search:
 
 ## Getting Started
 ### Prerequisites
+
+| Framework/Library | Version |
+|---|---|
+| Next.js | 13.0 |
+| React | 18.2 |
+| Vue.js | 3.2 |
+| Angular | 14.2 |
+| Svelte | 3.5 |
+| Laravel | 9.0 |
+| Bootstrap | 5.2 |
+| jQuery | 3.6 |
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.table th {
+  background-color: #ccc;
+}
+
+## Built With
+
+This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for
+the acknowledgements section. Here are a few examples.
+
+| Framework/Library | Version |
+|---|---|
+| Next.js | 13.0 |
+| React | 18.2 |
+| Vue.js | 3.2 |
+| Angular | 14.2 |
+| Svelte | 3.5 |
+| Laravel | 9.0 |
+| Bootstrap | 5.2 |
+| jQuery | 3.6 |
