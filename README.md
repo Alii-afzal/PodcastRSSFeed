@@ -14,7 +14,7 @@ Logging and Elastic Search:
 + We use Elastic Search for showing and managing Loggings.
 ## Built With
 + Python
-* [![Django]([django.js](https://www.python.org/static/community_logos/python-logo.png))](django-url)
+* ![Python Logo](https://www.python.org/static/community_logos/python-logo.png)
 + Django REST framework
 + RabbitMq
 + Docker
