@@ -15,8 +15,9 @@ Logging and Elastic Search:
 ## Built With
 + Python
 + ![image](https://github.com/Alii-afzal/PodcastRSSFeed/assets/135259862/10cd718e-5ab5-452b-b414-18a296d9a9ee)
++ https://www.vectorlogo.zone/logos/djangoproject/djangoproject-ar21.svg
 
-* ![Django][image](https://github.com/Alii-afzal/PodcastRSSFeed/assets/135259862/10cd718e-5ab5-452b-b414-18a296d9a9ee)(https://www.djangoproject.com/)
+* ![Django](https://github.com/Alii-afzal/PodcastRSSFeed/assets/135259862/10cd718e-5ab5-452b-b414-18a296d9a9ee)(https://www.djangoproject.com/)
 + Django REST framework
 + RabbitMq
 + Docker
