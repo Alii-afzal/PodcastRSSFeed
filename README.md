@@ -26,5 +26,25 @@ Logging and Elastic Search:
 + Django 4.2.7
 
 ## Installation
-install using `pip`...
-      pip install djangorestframework
+The first thing to do is to clone the repository:
+```
+git clone https://github.com/Alii-afzal/PodcastRSSFeed.git
+cd PodcastRSSFeed 
+```
+Create a virtual environment to install dependencies in and activate it:
+See the https://docs.python.org/3/library/venv.html
+In Windows:
+```
+python -m venv env
+env\Scripts\activate
+```
+Then install the dependencies:
+```
+(env)$ pip install -r requirements.txt
+```
+Once pip has finished downloading the dependencies:
+```
+python manage.py migrate
+python manage.py createsuperuser
+docker compose up -d --build
+```
