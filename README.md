@@ -35,7 +35,7 @@ We have a Django backend project for aggregating and managing RSS feeds. In this
 git clone https://github.com/Alii-afzal/PodcastRSSFeed.git
 cd PodcastRSSFeed 
 ```
-2- Create a virtual environment to install dependencies in and activate it:
+2- Create a virtual environment to install dependencies in and activate it:<br>
 See the https://docs.python.org/3/library/venv.html
 In Windows:
 ```
