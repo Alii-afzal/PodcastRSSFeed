@@ -14,6 +14,8 @@ We have a Django backend project for aggregating and managing RSS feeds. In this
 #### ElasticSearch:
 + We store all update events and errors in an Elasticsearch database for monitoring and analysis.
 #### Logging and Event Tracking:
++ We store every API request and response in one log.
++ We store Celery task actions and status changes in a dedicated log.
 ## Built With
 + DJANGO
 + DJANGO REST FRAMEWORK
