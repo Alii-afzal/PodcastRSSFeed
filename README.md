@@ -26,17 +26,38 @@ Logging and Elastic Search:
 + Django 4.2.7
 
 ## Installation
-The first thing to do is to clone the repository:
+1- The first thing to do is to clone the repository:
 ```
 git clone https://github.com/Alii-afzal/PodcastRSSFeed.git
 cd PodcastRSSFeed 
 ```
-Create a virtual environment to install dependencies in and activate it:
+2- Create a virtual environment to install dependencies in and activate it:
 See the https://docs.python.org/3/library/venv.html
 In Windows:
 ```
 python -m venv env
 env\Scripts\activate
+```
+3- Create a .env file in your project root to store environment variables base on Django project settings like this:
+```
+SECRET_KEY= your secret key
+DB_NAME= your postgres name
+DB_USER= your postgres username
+DB_PASSWORD= your postgres password
+DB_HOST= your postgres host
+DB_PORT= your postgres port
+
+REDIS_HOST= your redis host
+REDIS_PORT= your redis port
+
+CELERY_BROKER= your celery broker url
+CELERY_BACKEND= your celery backend url
+
+RABBITMQ_HOST= your rabbitmq host
+RABBITMQ_PORT= your rabbitmq port
+
+ELASTICSEARCH_HOST= your elasticsearch host
+ELASTICSEARCH_PORT= your elasticsearch port
 ```
 Then install the dependencies:
 ```
